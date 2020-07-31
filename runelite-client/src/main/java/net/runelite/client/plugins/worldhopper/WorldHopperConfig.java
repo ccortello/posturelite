@@ -25,12 +25,13 @@
  */
 package net.runelite.client.plugins.worldhopper;
 
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.Keybind;
+
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 
 @ConfigGroup(WorldHopperConfig.GROUP)
 public interface WorldHopperConfig extends Config
@@ -143,6 +144,17 @@ public interface WorldHopperConfig extends Config
 		position = 9
 	)
 	default boolean displayPing()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "showWorldHoppingFrom",
+		name = "Display world you're hopping from",
+		description = "Displays both world you're hopping from and world you're hopping to in chat",
+		position = 10
+	)
+	default boolean showWorldHoppingFrom()
 	{
 		return false;
 	}

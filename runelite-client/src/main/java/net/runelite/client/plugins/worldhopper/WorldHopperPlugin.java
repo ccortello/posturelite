@@ -30,40 +30,11 @@ import com.google.common.base.Stopwatch;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ObjectArrays;
 import com.google.inject.Provides;
-import java.awt.image.BufferedImage;
-import java.time.Instant;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-import javax.imageio.ImageIO;
-import javax.inject.Inject;
-import javax.swing.SwingUtilities;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.ChatMessageType;
-import net.runelite.api.ChatPlayer;
-import net.runelite.api.FriendsChatMember;
-import net.runelite.api.FriendsChatManager;
-import net.runelite.api.Client;
-import net.runelite.api.Friend;
-import net.runelite.api.GameState;
-import net.runelite.api.MenuAction;
-import net.runelite.api.MenuEntry;
-import net.runelite.api.NameableContainer;
-import net.runelite.api.Varbits;
-import net.runelite.api.events.ChatMessage;
-import net.runelite.api.events.GameStateChanged;
-import net.runelite.api.events.GameTick;
-import net.runelite.api.events.MenuEntryAdded;
-import net.runelite.api.events.PlayerMenuOptionClicked;
-import net.runelite.api.events.VarbitChanged;
-import net.runelite.api.events.WorldListLoad;
+import net.runelite.api.*;
+import net.runelite.api.events.*;
 import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.chat.ChatColorType;
@@ -90,6 +61,20 @@ import net.runelite.http.api.worlds.World;
 import net.runelite.http.api.worlds.WorldResult;
 import net.runelite.http.api.worlds.WorldType;
 import org.apache.commons.lang3.ArrayUtils;
+
+import javax.imageio.ImageIO;
+import javax.inject.Inject;
+import javax.swing.*;
+import java.awt.image.BufferedImage;
+import java.time.Instant;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 @PluginDescriptor(
 	name = "World Hopper",
@@ -647,19 +632,45 @@ public class WorldHopperPlugin extends Plugin
 
 		if (config.showWorldHopMessage())
 		{
+			/*
 			String chatMessage = new ChatMessageBuilder()
+					.append(ChatColorType.NORMAL)
+					.append("Quick-hopping to World ")
+					.append(ChatColorType.HIGHLIGHT)
+					.append(Integer.toString(world.getId()))
+					.append(ChatColorType.NORMAL)
+					.append("..")
+					.build();
+
+			chatMessageManager
+					.queue(QueuedMessage.builder()
+							.type(ChatMessageType.CONSOLE)
+							.runeLiteFormattedMessage(chatMessage)
+							.build());
+			*/
+
+
+			ChatMessageBuilder chatMessageBuilder = new ChatMessageBuilder()
 				.append(ChatColorType.NORMAL)
-				.append("Quick-hopping to World ")
+				.append("Quick-hopping");
+				if (config.showWorldHoppingFrom()) {
+					chatMessageBuilder
+					.append(" from World ")
+					.append(ChatColorType.HIGHLIGHT)
+					.append(Integer.toString(client.getWorld()))
+					.append(ChatColorType.NORMAL);
+				}
+				chatMessageBuilder
+				.append(" to World ")
 				.append(ChatColorType.HIGHLIGHT)
 				.append(Integer.toString(world.getId()))
 				.append(ChatColorType.NORMAL)
-				.append("..")
-				.build();
+				.append("..");
 
 			chatMessageManager
 				.queue(QueuedMessage.builder()
 					.type(ChatMessageType.CONSOLE)
-					.runeLiteFormattedMessage(chatMessage)
+					.runeLiteFormattedMessage(chatMessageBuilder.build())
 					.build());
 		}
 

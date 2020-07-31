@@ -24,14 +24,26 @@
  */
 package net.runelite.client.plugins.barrows;
 
-import java.awt.Color;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 
+import java.awt.*;
+
 @ConfigGroup("barrows")
 public interface BarrowsConfig extends Config
 {
+	@ConfigItem(
+		keyName = "showMinimap",
+		name = "Show Minimap in tunnels",
+		description = "Configures whether or not the minimap is displayed",
+		position = 0
+	)
+	default boolean showMinimap()
+	{
+		return true;
+	}
+
 	@ConfigItem(
 		keyName = "showBrotherLoc",
 		name = "Show Brothers location",

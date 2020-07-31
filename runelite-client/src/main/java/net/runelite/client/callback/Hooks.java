@@ -24,35 +24,11 @@
  */
 package net.runelite.client.callback;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GraphicsConfiguration;
-import java.awt.Image;
-import java.awt.RenderingHints;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
-import java.awt.image.BufferedImage;
-import java.awt.image.VolatileImage;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.Client;
-import net.runelite.api.MainBufferProvider;
-import net.runelite.api.NullItemID;
-import net.runelite.api.RenderOverview;
-import net.runelite.api.Skill;
-import net.runelite.api.WorldMapManager;
-import net.runelite.api.events.BeforeRender;
-import net.runelite.api.events.FakeXpDrop;
-import net.runelite.api.events.GameStateChanged;
-import net.runelite.api.events.GameTick;
-import net.runelite.api.events.ScriptCallbackEvent;
+import net.runelite.api.*;
+import net.runelite.api.events.*;
 import net.runelite.api.hooks.Callbacks;
 import net.runelite.api.widgets.Widget;
-import static net.runelite.api.widgets.WidgetInfo.WORLD_MAP_VIEW;
 import net.runelite.api.widgets.WidgetItem;
 import net.runelite.client.Notifier;
 import net.runelite.client.chat.ChatMessageManager;
@@ -69,6 +45,17 @@ import net.runelite.client.ui.overlay.OverlayRenderer;
 import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
 import net.runelite.client.util.DeferredEventBus;
 import net.runelite.client.util.RSTimeUnit;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.image.BufferedImage;
+import java.awt.image.VolatileImage;
+
+import static net.runelite.api.widgets.WidgetInfo.WORLD_MAP_VIEW;
 
 /**
  * This class contains field required for mixins and runelite hooks to work.

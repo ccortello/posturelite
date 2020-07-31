@@ -285,7 +285,13 @@ public enum MenuAction
 	/**
 	 * Menu action triggered when the id is not defined in this class.
 	 */
-	UNKNOWN(-1);
+	UNKNOWN(-1),
+
+	/**
+	 * Added from OpenOSRS
+	 */
+	FOLLOW(2046),
+	TRADE(2047);
 
 	public static final int MENU_ACTION_DEPRIORITIZE_OFFSET = 2000;
 

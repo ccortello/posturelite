@@ -26,17 +26,16 @@
  */
 package net.runelite.client.plugins.slayer;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.util.List;
-import javax.inject.Inject;
 import net.runelite.api.NPC;
 import net.runelite.api.Point;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayUtil;
+
+import javax.inject.Inject;
+import java.awt.*;
+import java.util.List;
 
 public class TargetMinimapOverlay extends Overlay
 {
@@ -55,8 +54,8 @@ public class TargetMinimapOverlay extends Overlay
 	@Override
 	public Dimension render(Graphics2D graphics)
 	{
-		if (!config.highlightTargets())
-		{
+		if (config.highlightHull() || config.highlightTile() || config.highlightTrueTile() || config.highlightCenterTile()
+				|| config.highlightCenterTrueTile() || config.highlightSouthWestTile() || config.highlightSouthWestTrueTile()) {
 			return null;
 		}
 

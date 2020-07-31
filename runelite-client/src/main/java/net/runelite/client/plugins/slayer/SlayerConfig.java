@@ -25,15 +25,126 @@
  */
 package net.runelite.client.plugins.slayer;
 
-import java.awt.Color;
-import net.runelite.client.config.Config;
-import net.runelite.client.config.ConfigGroup;
-import net.runelite.client.config.ConfigItem;
-import net.runelite.client.config.Units;
+import net.runelite.client.config.*;
+
+import java.awt.*;
 
 @ConfigGroup("slayer")
 public interface SlayerConfig extends Config
 {
+	@ConfigSection(
+			name = "Render style",
+			description = "The render style of NPC highlighting",
+			position = 0
+	)
+	String renderStyleSection = "renderStyleSection";
+
+	@ConfigItem(
+			position = -2,
+			keyName = "ignoreDeadNpcs",
+			name = "Ignore dead NPCs",
+			description = "Prevents highlighting NPCs after they are dead",
+			section = renderStyleSection
+	)
+	default boolean ignoreDeadNpcs()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			position = 0,
+			keyName = "highlightHull",
+			name = "Highlight hull",
+			description = "Configures whether or not NPC should be highlighted by hull",
+			section = renderStyleSection
+	)
+	default boolean highlightHull()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			position = 1,
+			keyName = "highlightTile",
+			name = "Highlight tile",
+			description = "Configures whether or not NPC should be highlighted by tile",
+			section = renderStyleSection
+	)
+	default boolean highlightTile()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+			position = 2,
+			keyName = "highlightTrueTile",
+			name = "Highlight true tile",
+			description = "Configures whether or not NPC should be highlighted by server-side tile",
+			section = renderStyleSection
+	)
+	default boolean highlightTrueTile()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+			position = 3,
+			keyName = "highlightCenterTile",
+			name = "Highlight center tile",
+			description = "Configures whether or not NPC should be highlighted by center tile",
+			section = renderStyleSection
+	)
+	default boolean highlightCenterTile()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+			position = 4,
+			keyName = "highlightTrueCenterTile",
+			name = "Highlight center true tile",
+			description = "Configures whether or not NPC should be highlighted by server-side center tile",
+			section = renderStyleSection
+	)
+	default boolean highlightCenterTrueTile()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+			position = 5,
+			keyName = "highlightSouthWestTile",
+			name = "Highlight south west tile",
+			description = "Configures whether or not NPC should be highlighted by south western tile",
+			section = renderStyleSection
+	)
+	default boolean highlightSouthWestTile()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+			position = 6,
+			keyName = "highlightTrueSouthWestTile",
+			name = "Highlight south west true tile",
+			description = "Configures whether or not NPC should be highlighted by server-side south western tile",
+			section = renderStyleSection
+	)
+	default boolean highlightSouthWestTrueTile()
+	{
+		return false;
+	}
+
+//	@ConfigItem(
+//			position = 0,
+//			keyName = "showRespawnTimer",
+//			name = "Show respawn timer",
+//			description = "Show respawn timer of tagged NPCs")
+//	default boolean showRespawnTimer()
+//	{
+//		return false;
+//	}
+
 	@ConfigItem(
 		position = 1,
 		keyName = "infobox",
@@ -79,17 +190,7 @@ public interface SlayerConfig extends Config
 		return 5;
 	}
 
-	@ConfigItem(
-		position = 5,
-		keyName = "highlightTargets",
-		name = "Highlight Targets",
-		description = "Highlight monsters you can kill for your current slayer assignment"
-	)
-	default boolean highlightTargets()
-	{
-		return false;
-	}
-
+	@Alpha
 	@ConfigItem(
 		position = 6,
 		keyName = "targetColor",
@@ -98,7 +199,19 @@ public interface SlayerConfig extends Config
 	)
 	default Color getTargetColor()
 	{
-		return Color.RED;
+		return Color.YELLOW;
+	}
+
+	@Alpha
+	@ConfigItem(
+		position = 6,
+		keyName = "aggressiveTargetColor",
+		name = "Aggressive Target Color",
+		description = "Color of the highlighted and aggressive targets"
+	)
+	default Color getAggressiveTargetColor()
+	{
+		return Color.ORANGE;
 	}
 
 	@ConfigItem(

@@ -24,12 +24,9 @@
  */
 package net.runelite.client.plugins.npchighlight;
 
-import java.awt.Color;
-import net.runelite.client.config.Alpha;
-import net.runelite.client.config.Config;
-import net.runelite.client.config.ConfigGroup;
-import net.runelite.client.config.ConfigItem;
-import net.runelite.client.config.ConfigSection;
+import net.runelite.client.config.*;
+
+import java.awt.*;
 
 @ConfigGroup("npcindicators")
 public interface NpcIndicatorsConfig extends Config
@@ -67,6 +64,42 @@ public interface NpcIndicatorsConfig extends Config
 
 	@ConfigItem(
 		position = 2,
+		keyName = "highlightTrueTile",
+		name = "Highlight true tile",
+		description = "Configures whether or not NPC should be highlighted by server-side tile",
+		section = renderStyleSection
+	)
+	default boolean highlightTrueTile()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		position = 3,
+		keyName = "highlightCenterTile",
+		name = "Highlight center tile",
+		description = "Configures whether or not NPC should be highlighted by center tile",
+		section = renderStyleSection
+	)
+	default boolean highlightCenterTile()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		position = 4,
+		keyName = "highlightTrueCenterTile",
+		name = "Highlight center true tile",
+		description = "Configures whether or not NPC should be highlighted by server-side center tile",
+		section = renderStyleSection
+	)
+	default boolean highlightTrueCenterTile()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		position = 5,
 		keyName = "highlightSouthWestTile",
 		name = "Highlight south west tile",
 		description = "Configures whether or not NPC should be highlighted by south western tile",
@@ -78,7 +111,19 @@ public interface NpcIndicatorsConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 3,
+		position = 6,
+		keyName = "highlightTrueSouthWestTile",
+		name = "Highlight south west true tile",
+		description = "Configures whether or not NPC should be highlighted by server-side south western tile",
+		section = renderStyleSection
+	)
+	default boolean highlightTrueSouthWestTile()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		position = 7,
 		keyName = "npcToHighlight",
 		name = "NPCs to Highlight",
 		description = "List of NPC names to highlight"
@@ -95,20 +140,32 @@ public interface NpcIndicatorsConfig extends Config
 	)
 	void setNpcToHighlight(String npcsToHighlight);
 
+	@Alpha
 	@ConfigItem(
-		position = 4,
+		position = 8,
 		keyName = "npcColor",
 		name = "Highlight Color",
 		description = "Color of the NPC highlight"
 	)
-	@Alpha
 	default Color getHighlightColor()
 	{
 		return Color.CYAN;
 	}
 
+	@Alpha
 	@ConfigItem(
-		position = 5,
+		position = 8,
+		keyName = "npcAggressiveColor",
+		name = "Aggressive Highlight Color",
+		description = "Color of the aggressive NPC highlight"
+	)
+	default Color getAggressiveHighlightColor()
+	{
+		return Color.GREEN;
+	}
+
+	@ConfigItem(
+		position = 9,
 		keyName = "drawNames",
 		name = "Draw names above NPC",
 		description = "Configures whether or not NPC names should be drawn above the NPC"
@@ -119,7 +176,7 @@ public interface NpcIndicatorsConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 6,
+		position = 10,
 		keyName = "drawMinimapNames",
 		name = "Draw names on minimap",
 		description = "Configures whether or not NPC names should be drawn on the minimap"
@@ -130,7 +187,7 @@ public interface NpcIndicatorsConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 7,
+		position = 11,
 		keyName = "highlightMenuNames",
 		name = "Highlight menu names",
 		description = "Highlight NPC names in right click menu"
@@ -141,7 +198,7 @@ public interface NpcIndicatorsConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 8,
+		position = 12,
 		keyName = "ignoreDeadNpcs",
 		name = "Ignore dead NPCs",
 		description = "Prevents highlighting NPCs after they are dead"
@@ -152,7 +209,7 @@ public interface NpcIndicatorsConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 9,
+		position = 13,
 		keyName = "deadNpcMenuColor",
 		name = "Dead NPC menu color",
 		description = "Color of the NPC menus for dead NPCs"
@@ -160,7 +217,7 @@ public interface NpcIndicatorsConfig extends Config
 	Color deadNpcMenuColor();
 
 	@ConfigItem(
-		position = 10,
+		position = 14,
 		keyName = "showRespawnTimer",
 		name = "Show respawn timer",
 		description = "Show respawn timer of tagged NPCs")

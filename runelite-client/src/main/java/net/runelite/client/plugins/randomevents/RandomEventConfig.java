@@ -75,6 +75,17 @@ public interface RandomEventConfig extends Config
 	}
 
 	@ConfigItem(
+		keyName = "notifyDwarf",
+		name = "Notify on Drunken Dwarf",
+		description = "",
+		section = notificationSection
+	)
+	default boolean notifyDwarf()
+	{
+		return false;
+	}
+
+	@ConfigItem(
 		keyName = "notifyGenie",
 		name = "Notify on Genie",
 		description = "",

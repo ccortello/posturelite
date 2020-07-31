@@ -27,16 +27,8 @@ package net.runelite.client.plugins.randomevents;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Provides;
-import java.util.Arrays;
-import java.util.Set;
-import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.Actor;
-import net.runelite.api.Client;
-import net.runelite.api.MenuAction;
-import net.runelite.api.NPC;
-import net.runelite.api.NpcID;
-import net.runelite.api.Player;
+import net.runelite.api.*;
 import net.runelite.api.events.InteractingChanged;
 import net.runelite.api.events.MenuEntryAdded;
 import net.runelite.api.events.NpcDespawned;
@@ -45,6 +37,10 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+
+import javax.inject.Inject;
+import java.util.Arrays;
+import java.util.Set;
 
 @PluginDescriptor(
 	name = "Random Events",
@@ -191,6 +187,12 @@ public class RandomEventPlugin extends Plugin
 			case NpcID.DR_JEKYLL:
 			case NpcID.DR_JEKYLL_314:
 				return config.notifyJekyll();
+			case NpcID.DRUNKEN_DWARF:
+			case NpcID.DRUNKEN_DWARF_2408:
+			case NpcID.DRUNKEN_DWARF_2409:
+			case NpcID.DRUNKEN_DWARF_2429:
+			case NpcID.DRUNKEN_DWARF_4305:
+				return config.notifyDwarf();
 			case NpcID.EVIL_BOB:
 			case NpcID.EVIL_BOB_6754:
 				return config.notifyBob();

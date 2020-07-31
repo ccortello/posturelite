@@ -24,11 +24,12 @@
  */
 package net.runelite.client.plugins.implings;
 
-import java.awt.Color;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigSection;
+
+import java.awt.*;
 
 /**
  *
@@ -370,5 +371,16 @@ public interface ImplingsConfig extends Config
 	default boolean showName()
 	{
 		return false;
+	}
+
+	@ConfigItem(
+		position = 28,
+		keyName = "showarrow",
+		name = "Show arrow on minimap",
+		description = "Configures whether or not an arrow pointing to the impling displayed on minimap.\nWorks only for notified implings."
+	)
+	default boolean showarrow()
+	{
+		return true;
 	}
 }

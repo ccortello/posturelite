@@ -35,13 +35,13 @@ public enum Tab
 	OVERVIEW("Overview", ItemID.OLD_NOTES),
 	CLOCK("Timers & Stopwatches", ItemID.WATCH),
 	BIRD_HOUSE("Bird Houses", ItemID.OAK_BIRD_HOUSE),
-	ALLOTMENT("Allotment Patches", ItemID.CABBAGE),
+	ALLOTMENT("Allotment Patches", ItemID.SNAPE_GRASS),
 	FLOWER("Flower Patches", ItemID.RED_FLOWERS),
 	HERB("Herb Patches", ItemID.GRIMY_RANARR_WEED),
 	TREE("Tree Patches", ItemID.YEW_LOGS),
 	FRUIT_TREE("Fruit Tree Patches", ItemID.PINEAPPLE),
 	HOPS("Hops Patches", ItemID.BARLEY),
-	BUSH("Bush Patches", ItemID.POISON_IVY_BERRIES),
+	BUSH("Bush Patches", ItemID.WHITE_BERRIES),
 	GRAPE("Grape Patches", ItemID.GRAPES),
 	SPECIAL("Special Patches", ItemID.MUSHROOM);
 

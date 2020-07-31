@@ -25,12 +25,9 @@
 package net.runelite.client.plugins.implings;
 
 import com.google.inject.Provides;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
 import lombok.AccessLevel;
 import lombok.Getter;
+import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.NPC;
 import net.runelite.api.events.GameStateChanged;
@@ -43,6 +40,11 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
+
+import javax.inject.Inject;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @PluginDescriptor(
 	name = "Implings",
@@ -69,6 +71,9 @@ public class ImplingsPlugin extends Plugin
 	@Inject
 	private Notifier notifier;
 
+	@Inject
+	private Client client;
+
 	@Provides
 	ImplingsConfig getConfig(ConfigManager configManager)
 	{
@@ -86,6 +91,7 @@ public class ImplingsPlugin extends Plugin
 	protected void shutDown()
 	{
 		implings.clear();
+		client.clearHintArrow();
 		overlayManager.remove(overlay);
 		overlayManager.remove(minimapOverlay);
 	}
@@ -101,6 +107,8 @@ public class ImplingsPlugin extends Plugin
 			if (showImplingType(impling.getImplingType()) == ImplingsConfig.ImplingMode.NOTIFY)
 			{
 				notifier.notify(impling.getImplingType().getName() + " impling is in the area");
+				if (config.showarrow())
+					client.setHintArrow(npc);
 			}
 
 			implings.add(npc);
@@ -118,6 +126,8 @@ public class ImplingsPlugin extends Plugin
 			if (showImplingType(impling.getImplingType()) == ImplingsConfig.ImplingMode.NOTIFY)
 			{
 				notifier.notify(impling.getImplingType().getName() + " impling is in the area");
+				if (config.showarrow())
+					client.setHintArrow(npc);
 			}
 
 			if (!implings.contains(npc))
@@ -133,6 +143,7 @@ public class ImplingsPlugin extends Plugin
 		if (event.getGameState() == GameState.LOGIN_SCREEN || event.getGameState() == GameState.HOPPING)
 		{
 			implings.clear();
+			client.clearHintArrow();
 		}
 	}
 

@@ -26,19 +26,9 @@
 package net.runelite.client.plugins.opponentinfo;
 
 import com.google.inject.Provides;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.EnumSet;
-import javax.inject.Inject;
 import lombok.AccessLevel;
 import lombok.Getter;
-import net.runelite.api.Actor;
-import net.runelite.api.Client;
-import net.runelite.api.GameState;
-import net.runelite.api.MenuAction;
-import net.runelite.api.MenuEntry;
-import net.runelite.api.NPC;
-import net.runelite.api.WorldType;
+import net.runelite.api.*;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.InteractingChanged;
@@ -49,6 +39,11 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.http.api.hiscore.HiscoreEndpoint;
+
+import javax.inject.Inject;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.EnumSet;
 
 @PluginDescriptor(
 	name = "Opponent Information",
@@ -78,7 +73,7 @@ public class OpponentInfoPlugin extends Plugin
 	private HiscoreEndpoint hiscoreEndpoint = HiscoreEndpoint.NORMAL;
 
 	@Getter(AccessLevel.PACKAGE)
-	private Actor lastOpponent;
+	public static Actor lastOpponent;
 
 	private Instant lastTime;
 

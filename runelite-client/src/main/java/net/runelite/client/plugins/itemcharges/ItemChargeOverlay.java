@@ -25,16 +25,16 @@
  */
 package net.runelite.client.plugins.itemcharges;
 
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Rectangle;
-import javax.inject.Inject;
 import net.runelite.api.ItemID;
 import net.runelite.api.widgets.WidgetItem;
-import static net.runelite.client.plugins.itemcharges.ItemChargeType.*;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.overlay.WidgetItemOverlay;
 import net.runelite.client.ui.overlay.components.TextComponent;
+
+import javax.inject.Inject;
+import java.awt.*;
+
+import static net.runelite.client.plugins.itemcharges.ItemChargeType.*;
 
 class ItemChargeOverlay extends WidgetItemOverlay
 {
@@ -135,7 +135,8 @@ class ItemChargeOverlay extends WidgetItemOverlay
 				|| (type == ABYSSAL_BRACELET && !config.showAbyssalBraceletCharges())
 				|| (type == AMULET_OF_CHEMISTRY && !config.showAmuletOfChemistryCharges())
 				|| (type == AMULET_OF_BOUNTY && !config.showAmuletOfBountyCharges())
-				|| (type == POTION && !config.showPotionDoseCount()))
+				|| (type == POTION && (!config.showPotionDoseCount()
+				|| config.hideFullPotionCharges() && chargeItem.getCharges() == 4)))
 			{
 				return;
 			}

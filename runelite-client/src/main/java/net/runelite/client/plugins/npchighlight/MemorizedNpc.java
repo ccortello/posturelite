@@ -24,21 +24,22 @@
  */
 package net.runelite.client.plugins.npchighlight;
 
-import java.util.ArrayList;
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import net.runelite.api.NPC;
 import net.runelite.api.NPCComposition;
 import net.runelite.api.coords.WorldPoint;
 
-class MemorizedNpc
+import java.util.ArrayList;
+import java.util.List;
+
+public class MemorizedNpc
 {
 	@Getter
-	private int npcIndex;
+	private final int npcIndex;
 
 	@Getter
-	private String npcName;
+	private final String npcName;
 
 	@Getter
 	private int npcSize;

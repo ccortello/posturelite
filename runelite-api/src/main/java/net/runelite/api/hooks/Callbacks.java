@@ -24,12 +24,13 @@
  */
 package net.runelite.api.hooks;
 
-import java.awt.Graphics;
+import net.runelite.api.MainBufferProvider;
+import net.runelite.api.widgets.WidgetItem;
+
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import net.runelite.api.MainBufferProvider;
-import net.runelite.api.widgets.WidgetItem;
 
 /**
  * Interface of callbacks the injected client uses to send events

@@ -24,11 +24,12 @@
  */
 package net.runelite.client;
 
+import okhttp3.HttpUrl;
+
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import javax.annotation.Nullable;
-import okhttp3.HttpUrl;
 
 public class RuneLiteProperties
 {
@@ -143,7 +144,8 @@ public class RuneLiteProperties
 
 	public static HttpUrl getPluginHubBase()
 	{
-		String version = System.getProperty(PLUGINHUB_VERSION, properties.getProperty(PLUGINHUB_VERSION));
+//		String version = System.getProperty(PLUGINHUB_VERSION, properties.getProperty(PLUGINHUB_VERSION));
+		String version = "1.6.22";
 		return HttpUrl.parse(properties.get(PLUGINHUB_BASE) + "/" + version);
 	}
 
