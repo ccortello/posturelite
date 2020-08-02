@@ -70,7 +70,7 @@ public class RemoveMenuEntriesPlugin extends Plugin {
     public void startUp() {
         keyManager.registerKeyListener(inputListener);
         NPCsToRemove = Sets.newHashSet(STRING_SPLITTER.splitToList(config.NPCsToRemove().toLowerCase()));
-        customEntries = MAP_SPLITTER.split(config.customEntries().toLowerCase());
+//        customEntries = MAP_SPLITTER.split(config.customEntries().toLowerCase());
     }
 
     @Subscribe
@@ -79,7 +79,7 @@ public class RemoveMenuEntriesPlugin extends Plugin {
             return;
 
         NPCsToRemove = Sets.newHashSet(STRING_SPLITTER.splitToList(config.NPCsToRemove().toLowerCase()));
-        customEntries = MAP_SPLITTER.split(config.customEntries().toLowerCase());
+//        customEntries = MAP_SPLITTER.split(config.customEntries().toLowerCase());
     }
 
     @Subscribe

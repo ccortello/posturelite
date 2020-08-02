@@ -69,11 +69,11 @@ public interface RemoveMenuEntriesConfig extends Config {
     )
     default String NPCsToRemove() {return "";}
 
-    @ConfigItem(
-            position = 102,
-            keyName = "customEntries",
-            name = "Custom Entries",
-            description = "Custom entries to remove, in the form option:target"
-    )
-    default String customEntries() {return "";}
+//    @ConfigItem(
+//            position = 102,
+//            keyName = "customEntries",
+//            name = "Custom Entries",
+//            description = "Custom entries to remove, in the form option:target"
+//    )
+//    default String customEntries() {return "";}
 }

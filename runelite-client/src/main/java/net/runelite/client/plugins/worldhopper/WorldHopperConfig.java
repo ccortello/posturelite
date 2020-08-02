@@ -158,4 +158,15 @@ public interface WorldHopperConfig extends Config
 	{
 		return false;
 	}
+
+	@ConfigItem(
+		keyName = "hopBlastFurnaceOnly",
+		name = "Only hop on blast furnace worlds",
+		description = "Disables all worlds for quick hop except blast furnace worlds",
+		position = 11
+	)
+	default boolean hopBlastFurnaceOnly()
+	{
+		return false;
+	}
 }
