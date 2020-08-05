@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, Adam <Adam@sigterm.info>
+ * Copyright (c) 2020, Zach <https://github.com/zacharydwaller>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,19 +22,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.newmenuentryswapper;
+package net.runelite.client.plugins.oldmenuentryswapper;
 
-import lombok.Value;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-
-@Value
-class Swap
+@Getter
+@RequiredArgsConstructor
+public enum ShiftDepositMode
 {
-	private Predicate<String> optionPredicate;
-	private Predicate<String> targetPredicate;
-	private String swappedOption;
-	private Supplier<Boolean> enabled;
-	private boolean strict;
+	DEPOSIT_1("Deposit-1", 3, 2),
+	DEPOSIT_5("Deposit-5", 4, 3),
+	DEPOSIT_10("Deposit-10", 5, 4),
+	DEPOSIT_X("Deposit-X", 6, 6),
+	DEPOSIT_ALL("Deposit-All", 8, 5),
+	EXTRA_OP("Eat/Wield/Etc.", 9, 0),
+	OFF("Off", 0, 0);
+
+	private final String name;
+	private final int identifier;
+	private final int identifierDepositBox;
+
+	@Override
+	public String toString()
+	{
+		return name;
+	}
 }

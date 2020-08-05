@@ -25,26 +25,19 @@
  */
 package net.runelite.client.plugins.agility;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.Polygon;
-import java.awt.Shape;
-import java.util.List;
-import java.util.Set;
-import javax.inject.Inject;
-import net.runelite.api.Client;
-import net.runelite.api.NPC;
-import net.runelite.api.NPCComposition;
-import net.runelite.api.Perspective;
 import net.runelite.api.Point;
-import net.runelite.api.Tile;
+import net.runelite.api.*;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.client.game.AgilityShortcut;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayUtil;
+
+import javax.inject.Inject;
+import java.awt.*;
+import java.util.List;
+import java.util.Set;
 
 class AgilityOverlay extends Overlay
 {
@@ -109,9 +102,16 @@ class AgilityOverlay extends Overlay
 						configColor = config.getMarkColor();
 					}
 
-					if (config.highlightPortals() && Obstacles.PORTAL_OBSTACLE_IDS.contains(object.getId()))
+					if (Obstacles.PORTAL_OBSTACLE_IDS.contains(object.getId()))
 					{
-						configColor = config.getPortalsColor();
+						if (config.highlightPortals())
+						{
+							configColor = config.getPortalsColor();
+						}
+						else
+						{
+							return;
+						}
 					}
 
 					if (objectClickbox.contains(mousePosition.getX(), mousePosition.getY()))

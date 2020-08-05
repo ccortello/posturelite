@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, Zach <https://github.com/zacharydwaller>
+ * Copyright (c) 2019, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,26 +22,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.newmenuentryswapper;
+package net.runelite.client.plugins.oldmenuentryswapper;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum ShiftDepositMode
+public enum HouseAdvertisementMode
 {
-	DEPOSIT_1("Deposit-1", 3, 2),
-	DEPOSIT_5("Deposit-5", 4, 3),
-	DEPOSIT_10("Deposit-10", 5, 4),
-	DEPOSIT_X("Deposit-X", 6, 6),
-	DEPOSIT_ALL("Deposit-All", 8, 5),
-	EXTRA_OP("Eat/Wield/Etc.", 9, 0),
-	OFF("Off", 0, 0);
+	VIEW("View"),
+	ADD_HOUSE("Add-House"),
+	VISIT_LAST("Visit-Last");
 
 	private final String name;
-	private final int identifier;
-	private final int identifierDepositBox;
 
 	@Override
 	public String toString()

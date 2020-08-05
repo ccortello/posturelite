@@ -22,17 +22,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.newmenuentryswapper;
+package net.runelite.client.plugins.oldmenuentryswapper;
 
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigSection;
 
-@ConfigGroup(NewMenuEntrySwapperConfig.GROUP)
-public interface NewMenuEntrySwapperConfig extends Config
+@ConfigGroup(OldMenuEntrySwapperConfig.GROUP)
+public interface OldMenuEntrySwapperConfig extends Config
 {
-	String GROUP = "newmenuentryswapper";
+	String GROUP = "menuentryswapper";
 
 	@ConfigSection(
 		name = "Item Swaps",
@@ -498,9 +498,31 @@ public interface NewMenuEntrySwapperConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "shopBuy",
+		keyName = "shopShiftBuy",
 		name = "Shop Buy Shift-Click",
 		description = "Swaps the Buy options with Value on items in shops when shift is held.",
+		section = uiSection
+	)
+	default BuyMode shopShiftBuy()
+	{
+		return BuyMode.OFF;
+	}
+
+	@ConfigItem(
+		keyName = "shopShiftSell",
+		name = "Shop Sell Shift-Click",
+		description = "Swaps the Sell options with Value on items in your inventory when selling to shops when shift is held.",
+		section = uiSection
+	)
+	default SellMode shopShiftSell()
+	{
+		return SellMode.OFF;
+	}
+
+	@ConfigItem(
+		keyName = "shopBuy",
+		name = "Shop Buy Left-Click",
+		description = "Swaps the Buy options with Value on items in shops when shift is not held.",
 		section = uiSection
 	)
 	default BuyMode shopBuy()
@@ -510,8 +532,8 @@ public interface NewMenuEntrySwapperConfig extends Config
 
 	@ConfigItem(
 		keyName = "shopSell",
-		name = "Shop Sell Shift-Click",
-		description = "Swaps the Sell options with Value on items in your inventory when selling to shops when shift is held.",
+		name = "Shop Sell Left-Click",
+		description = "Swaps the Sell options with Value on items in your inventory when selling to shops when shift is not held.",
 		section = uiSection
 	)
 	default SellMode shopSell()
@@ -553,13 +575,111 @@ public interface NewMenuEntrySwapperConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "swapTan",
-		name = "Tan",
-		description = "Swap Tan 1 with Tan All",
-		section = uiSection
+			keyName = "swapTan",
+			name = "Tan",
+			description = "Swap Tan 1 with Tan All",
+			section = uiSection
 	)
 	default boolean swapTan()
 	{
 		return false;
+	}
+
+	@ConfigItem(
+		keyName = "swapCollectMiscellania",
+		name = "Miscellania",
+		description = "Swap Talk-to with Collect for Advisor Ghrim",
+		section = npcSection
+	)
+	default boolean swapCollectMiscellania()
+	{
+		return false;
+	}
+
+	@ConfigSection(
+			name = "Custom RL Swaps",
+			description = "My added swaps =}",
+			position = 100,
+			closedByDefault = true
+	)
+	String customSection = "customSection";
+
+	@ConfigItem(
+			keyName = "swapOpCon",
+			name = "OP Construction",
+			description = "Enable 1-click build / remove",
+			section = customSection
+	)
+	default boolean swapOpCon()
+	{
+		return true;
+	}
+
+//	@ConfigItem(
+//			keyName = "swapPickpocket",
+//			name = "Pickpocket",
+//			description = "Swap Talk-to with Pickpocket",
+//			section = customSection
+//	)
+//	default boolean swapPickpocket()
+//	{
+//		return true;
+//	}
+
+	@ConfigItem(
+		keyName = "unlockHint",
+		name = "Music Hints",
+		description = "Shift-clicking a music track will prioritize unlock hint over play.",
+		section = customSection
+	)
+	default boolean unlockHint()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+			keyName = "swapPuroPuro",
+			name = "Swap Puro Puro",
+			description = "Left click push-through, prioritize rarest impling.",
+			section = customSection
+	)
+	default boolean swapPuroPuro()
+	{
+		return false;
+	}
+
+//	@ConfigItem(
+//			keyName = "shiftWalkHere",
+//			name = "Shift Walk Here",
+//			description = "Shift prioritizes Walk Here option. Doesn't work! =(",
+//			section = customSection
+//	)
+//	default boolean shiftWalkHere()
+//	{
+//		return false;
+//	}
+
+	@ConfigItem(
+		keyName = "customSwaps",
+		name = "Custom Swaps",
+		description = "Custom swaps - use format target:option, delimited by new lines or commas",
+		position = 100,
+		section = customSection
+	)
+	default String customSwaps()
+	{
+		return "";
+	}
+
+	@ConfigItem(
+		keyName = "alwaysDrop",
+		name = "Always Drop",
+		description = "Items to always left-click drop. Delimited by new lines or commas",
+		position = 101,
+		section = customSection
+	)
+	default String alwaysDrop()
+	{
+		return "";
 	}
 }

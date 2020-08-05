@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, Ethan <http://github.com/shmeeps>
+ * Copyright (c) 2019, Rami <https://github.com/Rami-J>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,19 +22,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.newmenuentryswapper;
+package net.runelite.client.plugins.oldmenuentryswapper;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum FairyRingMode
+public enum GEItemCollectMode
 {
-	ZANARIS("Zanaris"),
-	LAST_DESTINATION("Last-Destination"),
-	CONFIGURE("Configure"),
-	OFF("Off");
+	DEFAULT("Default"),
+	ITEMS("Collect-items"),
+	NOTES("Collect-notes"),
+	BANK("Bank");
 
 	private final String name;
 

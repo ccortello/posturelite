@@ -23,7 +23,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.runelite.client.plugins.newmenuentryswapper;
+package net.runelite.client.plugins.oldmenuentryswapper;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

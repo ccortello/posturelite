@@ -22,13 +22,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.newmenuentryswapper;
+package net.runelite.client.plugins.oldmenuentryswapper;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
 public enum BuyMode
 {
-	OFF,
-	BUY_1,
-	BUY_5,
-	BUY_10,
-	BUY_50
+	OFF(null),
+	BUY_1("buy 1"),
+	BUY_5("buy 5"),
+	BUY_10("buy 10"),
+	BUY_50("buy 50");
+
+	private final String option;
 }

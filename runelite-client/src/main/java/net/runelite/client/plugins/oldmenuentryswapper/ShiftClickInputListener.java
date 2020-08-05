@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, Sam <dasistkeinnamen@gmail.com>
+ * Copyright (c) 2018, Kamiel
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,13 +22,44 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.runelite.client.plugins.newmenuentryswapper;
+package net.runelite.client.plugins.oldmenuentryswapper;
 
-public enum SellMode
+import net.runelite.api.Client;
+import net.runelite.client.callback.ClientThread;
+import net.runelite.client.input.KeyListener;
+
+import javax.inject.Inject;
+import java.awt.event.KeyEvent;
+
+public class ShiftClickInputListener implements KeyListener
 {
-	OFF,
-	SELL_1,
-	SELL_5,
-	SELL_10,
-	SELL_50
+    @Inject
+    private ClientThread clientThread;
+
+    @Inject
+    private Client client;
+
+    @Inject
+    private OldMenuEntrySwapperPlugin plugin;
+
+    @Override
+    public void keyTyped(KeyEvent event) {}
+
+    @Override
+    public void keyPressed(KeyEvent event)
+    {
+        if (event.getKeyCode() == KeyEvent.VK_SHIFT)
+        {
+            plugin.setShiftModifier(true);
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent event)
+    {
+        if (event.getKeyCode() == KeyEvent.VK_SHIFT)
+        {
+            plugin.setShiftModifier(false);
+        }
+    }
 }

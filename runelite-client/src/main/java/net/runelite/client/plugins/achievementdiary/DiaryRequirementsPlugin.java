@@ -25,19 +25,10 @@
  */
 package net.runelite.client.plugins.achievementdiary;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.FontTypeFace;
-import net.runelite.api.QuestState;
 import net.runelite.api.ScriptID;
-import net.runelite.api.VarPlayer;
 import net.runelite.api.events.WidgetLoaded;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetID;
@@ -46,19 +37,12 @@ import net.runelite.client.callback.ClientThread;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.achievementdiary.diaries.ArdougneDiaryRequirement;
-import net.runelite.client.plugins.achievementdiary.diaries.DesertDiaryRequirement;
-import net.runelite.client.plugins.achievementdiary.diaries.FaladorDiaryRequirement;
-import net.runelite.client.plugins.achievementdiary.diaries.FremennikDiaryRequirement;
-import net.runelite.client.plugins.achievementdiary.diaries.KandarinDiaryRequirement;
-import net.runelite.client.plugins.achievementdiary.diaries.KaramjaDiaryRequirement;
-import net.runelite.client.plugins.achievementdiary.diaries.KourendDiaryRequirement;
-import net.runelite.client.plugins.achievementdiary.diaries.LumbridgeDiaryRequirement;
-import net.runelite.client.plugins.achievementdiary.diaries.MorytaniaDiaryRequirement;
-import net.runelite.client.plugins.achievementdiary.diaries.VarrockDiaryRequirement;
-import net.runelite.client.plugins.achievementdiary.diaries.WesternDiaryRequirement;
-import net.runelite.client.plugins.achievementdiary.diaries.WildernessDiaryRequirement;
+import net.runelite.client.plugins.achievementdiary.diaries.*;
 import net.runelite.client.util.Text;
+
+import javax.inject.Inject;
+import java.util.*;
+import java.util.regex.Pattern;
 
 @Slf4j
 @PluginDescriptor(
@@ -277,7 +261,7 @@ public class DiaryRequirementsPlugin extends Plugin
 			assert !req.getRequirements().isEmpty();
 			for (Requirement ireq : req.getRequirements())
 			{
-				boolean satifisfied = satisfiesRequirement(ireq);
+				boolean satifisfied = ireq.satisfiesRequirement(client);
 				b.append(satifisfied ? "<col=000080><str>" : "<col=800000>");
 				b.append(ireq.toString());
 				b.append(satifisfied ? "</str>" : "<col=000080>");
@@ -291,46 +275,5 @@ public class DiaryRequirementsPlugin extends Plugin
 			reqs.put(req.getTask(), b.toString());
 		}
 		return reqs;
-	}
-
-	private boolean satisfiesRequirement(Requirement r)
-	{
-		if (r instanceof OrRequirement)
-		{
-			return ((OrRequirement) r).getRequirements()
-				.stream()
-				.anyMatch(this::satisfiesRequirement);
-		}
-		if (r instanceof SkillRequirement)
-		{
-			SkillRequirement s = (SkillRequirement) r;
-			return client.getRealSkillLevel(s.getSkill()) >= s.getLevel();
-		}
-		if (r instanceof CombatLevelRequirement)
-		{
-			return client.getLocalPlayer().getCombatLevel() >= ((CombatLevelRequirement) r).getLevel();
-		}
-		if (r instanceof QuestRequirement)
-		{
-			QuestRequirement q = (QuestRequirement) r;
-			QuestState state = q.getQuest().getState(client);
-			if (q.isStarted())
-			{
-				return state != QuestState.NOT_STARTED;
-			}
-			return state == QuestState.FINISHED;
-		}
-		if (r instanceof QuestPointRequirement)
-		{
-			return client.getVar(VarPlayer.QUEST_POINTS) >= ((QuestPointRequirement) r).getQp();
-		}
-		if (r instanceof FavourRequirement)
-		{
-			FavourRequirement f = (FavourRequirement) r;
-			int realFavour = client.getVar(f.getHouse().getVarbit());
-			return (realFavour / 10) >= f.getPercent();
-		}
-		log.warn("Unknown requirement {}", r);
-		return false;
 	}
 }
