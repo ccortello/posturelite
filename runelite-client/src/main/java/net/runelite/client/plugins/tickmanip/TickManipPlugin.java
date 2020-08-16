@@ -48,7 +48,6 @@ public class TickManipPlugin extends Plugin {
     private static boolean enable3tickFishing = false;
     private static boolean enable3tickMining = false;
     private static boolean hasntCooked = true;
-    private static boolean hasnt1tBones = true;
     private static int lastUsedBones;
     private static boolean lastClickedKnife = false;
     private static String fishingState = "inactive";
@@ -91,7 +90,6 @@ public class TickManipPlugin extends Plugin {
     @Subscribe
     public void onGameTick(GameTick event) {
         hasntCooked = true;
-        hasnt1tBones = true;
     }
 
     private boolean enable3tickMining() {
@@ -136,14 +134,14 @@ public class TickManipPlugin extends Plugin {
         final String target = Text.removeTags(event.getMenuTarget()).toLowerCase();
 
         // osrs remembers last item that you clicked use on, so only enable fast use when correct item was last clicked
-        if (event.getWidgetId() == 9764864 && event.getMenuTarget().equals("Use")) {
-            lastClickedKnife = (event.getId() == ItemID.KNIFE || event.getId() == ItemID.TEAK_LOGS || event.getId() == ItemID.MAHOGANY_LOGS);
+        if (event.getWidgetId() == 9764864 && event.getMenuAction().equals(MenuAction.ITEM_USE)) {
+            lastClickedKnife = event.getId() == ItemID.KNIFE;
 
             if (bones.contains(client.getItemDefinition(event.getId()).getName().toLowerCase()))
                 lastUsedBones = event.getActionParam();
             else
                 lastUsedBones = -1;
-            log.debug("lastUsedBones={}", lastUsedBones);
+//            log.debug("lastUsedBones={}", lastUsedBones);
         }
 
         if (target.contains("fire") && hasntCooked)

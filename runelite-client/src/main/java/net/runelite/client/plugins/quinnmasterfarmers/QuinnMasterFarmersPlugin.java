@@ -30,17 +30,18 @@ import java.util.HashSet;
 @Slf4j
 public class QuinnMasterFarmersPlugin extends Plugin {
     private static final Splitter STRING_SPLITTER = Splitter.onPattern("[,\r?\n]+").trimResults().omitEmptyStrings();
-    private static final HashSet<Integer> sixMostCommonSeeds = new HashSet<Integer>(Arrays.asList(ItemID.BARLEY_SEED,
+    private static final HashSet<Integer> sixMostCommonSeeds = new HashSet<>(Arrays.asList(ItemID.BARLEY_SEED,
             ItemID.CABBAGE_SEED, ItemID.HAMMERSTONE_SEED, ItemID.ONION_SEED, ItemID.POTATO_SEED, ItemID.TOMATO_SEED));
-    private static HashSet<Integer> shitSeeds = new HashSet<Integer>(Arrays.asList(ItemID.ASGARNIAN_SEED,
+    private static HashSet<Integer> shitSeeds = new HashSet<>(Arrays.asList(ItemID.ASGARNIAN_SEED,
             ItemID.BELLADONNA_SEED, ItemID.CACTUS_SEED, ItemID.CADAVABERRY_SEED, ItemID.DWELLBERRY_SEED,
             ItemID.GUAM_SEED, ItemID.HARRALANDER_SEED, ItemID.JANGERBERRY_SEED, ItemID.JUTE_SEED,
             ItemID.KRANDORIAN_SEED, ItemID.LIMPWURT_SEED, ItemID.MARIGOLD_SEED, ItemID.MARRENTILL_SEED, ItemID.MUSHROOM_SPORE,
             ItemID.NASTURTIUM_SEED, ItemID.POISON_IVY_SEED, ItemID.POTATO_CACTUS_SEED, ItemID.REDBERRY_SEED,
             ItemID.ROSEMARY_SEED, ItemID.SNAPE_GRASS_SEED, ItemID.STRAWBERRY_SEED, ItemID.SWEETCORN_SEED, ItemID.TARROMIN_SEED,
             ItemID.WATERMELON_SEED, ItemID.WHITEBERRY_SEED, ItemID.WILDBLOOD_SEED, ItemID.WOAD_SEED,
-            ItemID.YANILLIAN_SEED));
-    private static HashSet<String> moreShitSeeds;
+            ItemID.YANILLIAN_SEED, ItemID.TOADFLAX_SEED, ItemID.SNAPE_GRASS_SEED, ItemID.IRIT_SEED, ItemID.RANARR_SEED,
+            ItemID.AVANTOE_SEED));
+    private static HashSet<String> seedsToKeep;
     private static Item[] items;
     private static int maxItemsInInv = 0;
     private static boolean timeToDrop = false;
@@ -48,7 +49,7 @@ public class QuinnMasterFarmersPlugin extends Plugin {
     private Client client;
     @Inject
     private QuinnMasterFarmersConfig config;
-    private final HashSet<Integer> itemsToSkip = new HashSet<Integer>();
+    private final HashSet<Integer> itemsToKeep = new HashSet<Integer>();
 
     @Provides
     QuinnMasterFarmersConfig provideConfig(ConfigManager configManager) {
@@ -61,7 +62,7 @@ public class QuinnMasterFarmersPlugin extends Plugin {
         if (config.dropSixMostCommonSeeds())
             shitSeeds.addAll(sixMostCommonSeeds);
 
-        moreShitSeeds = Sets.newHashSet(STRING_SPLITTER.splitToList(config.seedsToSkip().toLowerCase()));
+        seedsToKeep = Sets.newHashSet(STRING_SPLITTER.splitToList(config.seedsToKeep().toLowerCase()));
     }
 
     @Subscribe
@@ -83,7 +84,7 @@ public class QuinnMasterFarmersPlugin extends Plugin {
         if (config.dropSixMostCommonSeeds())
             shitSeeds.addAll(sixMostCommonSeeds);
 
-        moreShitSeeds = Sets.newHashSet(STRING_SPLITTER.splitToList(config.seedsToSkip().toLowerCase()));
+        seedsToKeep = Sets.newHashSet(STRING_SPLITTER.splitToList(config.seedsToKeep().toLowerCase()));
     }
 
     @Subscribe
@@ -92,29 +93,37 @@ public class QuinnMasterFarmersPlugin extends Plugin {
         ItemContainer inventory = client.getItemContainer(InventoryID.INVENTORY);
         items = (inventory != null) ? inventory.getItems() : new Item[0];
 
-        int currentItems = 28;
+        int currentItems = 0;
         for (Item item : items)
-            if (item.getId() == -1)
-                currentItems--;
+            if (item.getId() > 0)
+                currentItems++;
 
+
+        boolean foundShitSeeds = false;
         if (currentItems >= Math.min(28, maxItemsInInv)) {
             timeToDrop = true;
-            itemsToSkip.clear();
+            itemsToKeep.clear();
         } else if (timeToDrop) {
-            boolean foundShitSeeds = false;
             for (Item item : items)
-                if (shitSeeds.contains(item.getId()) && !moreShitSeeds.contains(client.getItemDefinition(item.getId()).getName().toLowerCase())) {
+                if (shitSeeds.contains(item.getId()) && !seedsToKeep.contains(client.getItemDefinition(item.getId()).getName().toLowerCase())) {
                     foundShitSeeds = true;
                     break;
                 }
             timeToDrop = foundShitSeeds;
         }
+
+        log.debug("currentItems={}, timeToDrop={}, foundShitSeeds={}", currentItems, timeToDrop, foundShitSeeds);
+
+        if (timeToDrop)
+            for (Item item : items)
+                if (item.getId() != -1)
+                    log.debug("found item called {} with quantity {}", client.getItemDefinition(item.getId()).getName(), item.getQuantity());
     }
 
     @Subscribe
     public void onMenuOptionClicked(MenuOptionClicked event) {
         if (event.getWidgetId() == 9764864 && event.getMenuAction().equals(MenuAction.ITEM_DROP))
-            itemsToSkip.add(event.getId());
+            itemsToKeep.add(event.getId());
     }
 
     @Subscribe
@@ -130,8 +139,8 @@ public class QuinnMasterFarmersPlugin extends Plugin {
                 int currentID = items[i].getId();
                 MenuEntry[] entries = client.getMenuEntries();
                 String name = client.getItemDefinition(currentID).getName();
-                if (!itemsToSkip.contains(currentID) && shitSeeds.contains(currentID)
-                        && !moreShitSeeds.contains(name.toLowerCase())
+                if (!itemsToKeep.contains(currentID) && shitSeeds.contains(currentID)
+                        && !seedsToKeep.contains(name.toLowerCase())
                         && !entries[entries.length-1].getOption().equals("Drop")) {
                     client.setMenuEntries(ObjectArrays.concat(entries, setMenuEntry(
                             "Drop", "<col=ff9040>" + name, currentID, 37, i, 9764864)));

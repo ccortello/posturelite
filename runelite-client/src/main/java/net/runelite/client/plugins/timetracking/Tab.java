@@ -36,7 +36,7 @@ public enum Tab
 	CLOCK("Timers & Stopwatches", ItemID.WATCH),
 	BIRD_HOUSE("Bird Houses", ItemID.OAK_BIRD_HOUSE),
 	ALLOTMENT("Allotment Patches", ItemID.SNAPE_GRASS),
-	FLOWER("Flower Patches", ItemID.RED_FLOWERS),
+	FLOWER("Flower Patches", ItemID.LIMPWURT_ROOT),
 	HERB("Herb Patches", ItemID.GRIMY_RANARR_WEED),
 	TREE("Tree Patches", ItemID.YEW_LOGS),
 	FRUIT_TREE("Fruit Tree Patches", ItemID.PINEAPPLE),

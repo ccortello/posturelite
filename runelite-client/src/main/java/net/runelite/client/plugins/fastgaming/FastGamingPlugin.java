@@ -141,13 +141,19 @@ public class FastGamingPlugin extends Plugin {
         // osrs remembers last item that you clicked use on, so only enable fast use when correct item was last clicked
         if (event.getWidgetId() == 9764864) {
             int id = event.getId();
-            enableFastEssenceChiseling = (id == ItemID.CHISEL || id == ItemID.DARK_ESSENCE_BLOCK);
-            enableFastSacredEels = (id == ItemID.KNIFE || id == ItemID.SACRED_EEL);
-            enableFastNestCrushing = (id == ItemID.PESTLE_AND_MORTAR || id == ItemID.BIRD_NEST_5075);
-            lastClickedPipe = (id == ItemID.GLASSBLOWING_PIPE || id == ItemID.MOLTEN_GLASS);
+            if (event.getMenuAction().equals(MenuAction.ITEM_USE)) {
+                lastItemClicked = Text.standardize(client.getItemDefinition(event.getId()).getName());
+
+                enableFastEssenceChiseling = id == ItemID.CHISEL;
+                enableFastSacredEels = id == ItemID.KNIFE;
+                enableFastNestCrushing = id == ItemID.PESTLE_AND_MORTAR;
+                lastClickedPipe = id == ItemID.GLASSBLOWING_PIPE;
+                log.debug("enableFastEssenceChiseling={}, enableFastSacredEels={}, enableFastNestCrushing={}, lastClickedPipe={}",
+                        enableFastEssenceChiseling, enableFastSacredEels, enableFastNestCrushing, lastClickedPipe);
+            }
+
             justDroppedEmptylightorbs = (event.getMenuAction().equals(MenuAction.ITEM_DROP) && event.getId() == ItemID.EMPTY_LIGHT_ORB
                     && !inventory.contains(ItemID.MOLTEN_GLASS));
-            lastItemClicked = Text.standardize(client.getItemDefinition(event.getId()).getName());
         }
     }
 

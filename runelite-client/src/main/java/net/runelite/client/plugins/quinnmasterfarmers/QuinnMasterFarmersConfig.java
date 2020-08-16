@@ -29,9 +29,9 @@ public interface QuinnMasterFarmersConfig extends Config
 
     @ConfigItem(
             position = 3,
-            keyName = "seedsToSkip",
-            name = "Seeds to skip",
+            keyName = "seedsToKeep",
+            name = "Seeds to keep",
             description = "List of common seeds you don't want to drop."
     )
-    default String seedsToSkip() {return "";}
+    default String seedsToKeep() {return "";}
 }
