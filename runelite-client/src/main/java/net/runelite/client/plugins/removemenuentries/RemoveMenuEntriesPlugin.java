@@ -42,6 +42,7 @@ public class RemoveMenuEntriesPlugin extends Plugin {
             MenuAction.NPC_SECOND_OPTION, MenuAction.NPC_THIRD_OPTION, MenuAction.NPC_FOURTH_OPTION,
             MenuAction.NPC_FIFTH_OPTION, MenuAction.SPELL_CAST_ON_NPC, MenuAction.ITEM_USE_ON_NPC);
     private static Set<String> NPCsToRemove;
+    private static Set<String> lootToRemove;
     private static Map<String, String> customEntries;
 
     @Inject
@@ -70,7 +71,7 @@ public class RemoveMenuEntriesPlugin extends Plugin {
     public void startUp() {
         keyManager.registerKeyListener(inputListener);
         NPCsToRemove = Sets.newHashSet(STRING_SPLITTER.splitToList(config.NPCsToRemove().toLowerCase()));
-//        customEntries = MAP_SPLITTER.split(config.customEntries().toLowerCase());
+        lootToRemove = Sets.newHashSet(STRING_SPLITTER.splitToList(config.lootToRemove().toLowerCase()));
     }
 
     @Subscribe
@@ -79,7 +80,7 @@ public class RemoveMenuEntriesPlugin extends Plugin {
             return;
 
         NPCsToRemove = Sets.newHashSet(STRING_SPLITTER.splitToList(config.NPCsToRemove().toLowerCase()));
-//        customEntries = MAP_SPLITTER.split(config.customEntries().toLowerCase());
+        lootToRemove = Sets.newHashSet(STRING_SPLITTER.splitToList(config.lootToRemove().toLowerCase()));
     }
 
     @Subscribe
@@ -130,6 +131,7 @@ public class RemoveMenuEntriesPlugin extends Plugin {
                 && !(config.removePlayerTrade() && entryType == MenuAction.TRADE.getId())
                 && !(config.removePlayerFollow() && entryType == MenuAction.FOLLOW.getId())
                 && !(config.removeNPCs() && npc != null && npc.getName() != null && NPCsToRemove.contains(npc.getName().toLowerCase()))
+                && !(config.removeLoot() && (entryType == MenuAction.EXAMINE_ITEM_GROUND.getId() || entryType == MenuAction.GROUND_ITEM_THIRD_OPTION.getId()) && lootToRemove.contains(client.getItemDefinition(entry.getIdentifier()).getName().toLowerCase()))
                 && !(config.shiftWalkUnder() && shiftModifier && onNPC(entryType) && (entry.getIdentifier() != 0 && !RUNELITE_ACTIONS.contains(entryType))));
     }
 

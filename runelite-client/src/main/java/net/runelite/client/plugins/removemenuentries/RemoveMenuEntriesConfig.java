@@ -56,7 +56,7 @@ public interface RemoveMenuEntriesConfig extends Config {
     @ConfigItem(
             position = 100,
             keyName = "removeNPCs",
-            name = "Remove Specific NPC Entries",
+            name = "Remove specific NPC entries",
             description = "Remove all entries for specified NPCs"
     )
     default boolean removeNPCs() {return false;}
@@ -68,6 +68,22 @@ public interface RemoveMenuEntriesConfig extends Config {
             description = "List of NPCs to remove if Remove Specific NPC Entries is enabled."
     )
     default String NPCsToRemove() {return "";}
+
+    @ConfigItem(
+            position = 102,
+            keyName = "removeLoot",
+            name = "Remove Loot",
+            description = "Remove Take and Examine for specific items"
+    )
+    default boolean removeLoot() {return false;}
+
+    @ConfigItem(
+            position = 103,
+            keyName = "lootToRemove",
+            name = "Loot to Remove",
+            description = "List of items to remove Take and Examine options for (if Remove Specific NPC Entries is enabled)."
+    )
+    default String lootToRemove() {return "";}
 
 //    @ConfigItem(
 //            position = 102,

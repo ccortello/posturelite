@@ -112,7 +112,7 @@ public class QuinnMasterFarmersPlugin extends Plugin {
             timeToDrop = foundShitSeeds;
         }
 
-        log.debug("currentItems={}, timeToDrop={}, foundShitSeeds={}", currentItems, timeToDrop, foundShitSeeds);
+//        log.debug("currentItems={}, timeToDrop={}, foundShitSeeds={}", currentItems, timeToDrop, foundShitSeeds);
 
         if (timeToDrop)
             for (Item item : items)
