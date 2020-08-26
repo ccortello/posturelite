@@ -46,8 +46,8 @@ class DeathWorldMapPoint extends WorldMapPoint
 		graphics.drawImage(plugin.getMapArrow(), 0, 0, null);
 		graphics.drawImage(plugin.getBonesImage(), 0, 0, null);
 		worldmapHintArrowPoint = new Point(
-			worldmapHintArrow.getWidth() / 2,
-			worldmapHintArrow.getHeight());
+				worldmapHintArrow.getWidth() / 2,
+				worldmapHintArrow.getHeight());
 
 		this.plugin = plugin;
 		this.setSnapToEdge(true);

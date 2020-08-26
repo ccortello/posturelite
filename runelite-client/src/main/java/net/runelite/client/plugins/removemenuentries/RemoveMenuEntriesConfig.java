@@ -73,7 +73,7 @@ public interface RemoveMenuEntriesConfig extends Config {
             position = 102,
             keyName = "removeLoot",
             name = "Remove Loot",
-            description = "Remove Take and Examine for specific items"
+            description = "Remove ground options for specific items"
     )
     default boolean removeLoot() {return false;}
 
@@ -81,15 +81,7 @@ public interface RemoveMenuEntriesConfig extends Config {
             position = 103,
             keyName = "lootToRemove",
             name = "Loot to Remove",
-            description = "List of items to remove Take and Examine options for (if Remove Specific NPC Entries is enabled)."
+            description = "List of items to remove ground options for."
     )
     default String lootToRemove() {return "";}
-
-//    @ConfigItem(
-//            position = 102,
-//            keyName = "customEntries",
-//            name = "Custom Entries",
-//            description = "Custom entries to remove, in the form option:target"
-//    )
-//    default String customEntries() {return "";}
 }

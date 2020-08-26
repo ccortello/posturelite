@@ -198,8 +198,8 @@ public class FastGamingPlugin extends Plugin {
                 for (int i = items.length - 1; i > 0; i--) {
                     int currentID = items[i].getId();
                     if (currentID == ItemID.BIRD_NEST_5075) {
-                        customEntry = setMenuEntry("Fast Crush", "<col=ff9040>Pestle and mortar<col=ffffff> -> " +
-                                "<col=ff9040>" + client.getItemDefinition(currentID).getName(), currentID, 31, i, 9764864);
+                        customEntry = setMenuEntry("Fast Crush", "<col=ff9040>" +
+                                client.getItemDefinition(currentID).getName(), currentID, 31, i, 9764864);
                         break;
                     }
                 }
@@ -208,7 +208,7 @@ public class FastGamingPlugin extends Plugin {
                 for (int i = items.length - 1; i > 0; i--) {
                     int currentID = items[i].getId();
                     if (currentID == ItemID.DARK_ESSENCE_BLOCK) {
-                        customEntry = setMenuEntry("Fast Chisel", "<col=ff9040>Chisel<col=ffffff> -> <col=ff9040>" +
+                        customEntry = setMenuEntry("Fast Chisel", "<col=ff9040>" +
                                 client.getItemDefinition(currentID).getName(), currentID, 31, i, 9764864);
                         break;
                     }
@@ -218,7 +218,7 @@ public class FastGamingPlugin extends Plugin {
                 for (int i = items.length - 1; i > 0; i--) {
                     int currentID = items[i].getId();
                     if (currentID == ItemID.SACRED_EEL) {
-                        customEntry = setMenuEntry("Fast Cut", "<col=ff9040>Knife<col=ffffff> -> <col=ff9040>" +
+                        customEntry = setMenuEntry("Fast Cut", "<col=ff9040>" +
                                 client.getItemDefinition(currentID).getName(), currentID, 31, i, 9764864);
                         break;
                     }
@@ -232,7 +232,8 @@ public class FastGamingPlugin extends Plugin {
                     if (itemsAllowedToDrop.contains(Text.standardize(name)) && !itemsToSkip.contains(i)
                             && (!isLastDropItem(i, config.keepLastItem() ? 0 : -1)) // won't drop last item if config.keeplastitem
                             && (items[i].getQuantity() == 1 || config.fastDropStacks())) {
-                        customEntry = setMenuEntry("Fast Drop", "<col=ff9040>" + name, currentID, 37, i, 9764864);
+                        customEntry = setMenuEntry("Fast Drop", "<col=ff9040>" +
+                                name, currentID, 37, i, 9764864);
                         break;
                     }
                 }

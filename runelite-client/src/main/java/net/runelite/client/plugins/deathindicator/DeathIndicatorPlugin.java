@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2018, Danny <DannysPVM@gmail.com>
+ * Copyright (c) 2018, Adam <Adam@sigterm.info>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,6 +29,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.inject.Provides;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
+import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.ActorDeath;
 import net.runelite.api.events.CommandExecuted;
@@ -55,22 +57,22 @@ import java.time.temporal.ChronoUnit;
 import java.util.Set;
 
 @PluginDescriptor(
-	name = "Death Indicator",
-	description = "Show where you last died, and on what world",
-	tags = {"arrow", "hints", "world", "map", "overlay"}
+		name = "Death Indicator",
+		description = "Show where you last died, and on what world",
+		tags = {"arrow", "hints", "world", "map", "overlay"}
 )
 @Slf4j
 public class DeathIndicatorPlugin extends Plugin
 {
 	private static final String DEATH_TIMER_CLEAR = "Clear";
 	private static final Set<Integer> RESPAWN_REGIONS = ImmutableSet.of(
-		6457, // Kourend
-		12850, // Lumbridge
-		11828, // Falador
-		12342, // Edgeville
-		11062, // Camelot
-		13150, // Prifddinas (it's possible to spawn in 2 adjacent regions)
-		12894 // Prifddinas
+			6457, // Kourend
+			12850, // Lumbridge
+			11828, // Falador
+			12342, // Edgeville
+			11062, // Camelot
+			13150, // Prifddinas (it's possible to spawn in 2 adjacent regions)
+			12894 // Prifddinas
 	);
 
 	@Inject
@@ -156,50 +158,58 @@ public class DeathIndicatorPlugin extends Plugin
 	@Subscribe
 	public void onActorDeath(ActorDeath actorDeath)
 	{
-		Actor actor = actorDeath.getActor();
+		if ((config.retainInfo() && hasDied()) || client.getLocalPlayer() == null || client.isInInstancedRegion() || actorDeath.getActor() != client.getLocalPlayer())
+			return;
 
-			if (actor == null || client.isInInstancedRegion() || actor != client.getLocalPlayer()) {
-				return;
-			}
-
-			lastDeath = client.getLocalPlayer().getWorldLocation();
-			lastDeathWorld = client.getWorld();
-			lastDeathTime = Instant.now();
+		lastDeath = client.getLocalPlayer().getWorldLocation();
+		lastDeathWorld = client.getWorld();
+		lastDeathTime = Instant.now();
 	}
 
 	@Subscribe
 	public void onGameTick(GameTick event)
 	{
 		// Check if player respawned in a death respawn location
-		Player player = client.getLocalPlayer();
-		if (lastDeath == null || player == null || player.getWorldLocation() == null || player.getWorldLocation().equals(lastDeath))
-			return;
-
-		if (!RESPAWN_REGIONS.contains(client.getLocalPlayer().getWorldLocation().getRegionID()))
+		if (lastDeath != null && client.getLocalPlayer() != null && !client.getLocalPlayer().getWorldLocation().equals(lastDeath))
 		{
-			log.debug("Died, but did not respawn in a known respawn location: {}",
-				client.getLocalPlayer().getWorldLocation().getRegionID());
+			if (!RESPAWN_REGIONS.contains(client.getLocalPlayer().getWorldLocation().getRegionID()))
+			{
+				log.debug("Died, but did not respawn in a known respawn location: {}",
+						client.getLocalPlayer().getWorldLocation().getRegionID());
+
+				lastDeath = null;
+				lastDeathTime = null;
+				return;
+			}
+
+			log.debug("Died! Grave at {}", lastDeath);
+
+			die(lastDeath, lastDeathTime, lastDeathWorld);
 
 			lastDeath = null;
 			lastDeathTime = null;
-			return;
 		}
 
-		log.debug("Died! Grave at {}", lastDeath);
-
-		die(lastDeath, lastDeathTime, lastDeathWorld);
-
-		lastDeath = null;
-		lastDeathTime = null;
-
-		if (config.retainInfo() || !hasDied())// || (client.getWorld() != config.deathWorld()))
-		{
+		if (!hasDied() || client.getWorld() != config.deathWorld() || config.retainInfo())
 			return;
-		}
 
-		// Check if the player is at their death location, or timer has passed
+		// timer up?
+		boolean reset = deathTimer != null && deathTimer.cull();
+
+		// no more items on the ground?
 		WorldPoint deathPoint = new WorldPoint(config.deathLocationX(), config.deathLocationY(), config.deathLocationPlane());
-		if (deathPoint.equals(client.getLocalPlayer().getWorldLocation()) || (deathTimer != null && deathTimer.cull()))
+		LocalPoint localPoint = LocalPoint.fromWorld(client, deathPoint);
+		if (localPoint != null)
+		{
+			Tile[][][] tiles = client.getScene().getTiles();
+			Tile tile = tiles[client.getPlane()][localPoint.getSceneX()][localPoint.getSceneY()];
+			if (tile == null || tile.getGroundItems() == null || tile.getGroundItems().isEmpty())
+			{
+				reset = true;
+			}
+		}
+
+		if (reset)
 		{
 			reset();
 
@@ -210,7 +220,7 @@ public class DeathIndicatorPlugin extends Plugin
 	@Subscribe
 	public void onCommandExecuted(CommandExecuted commandExecuted)
 	{
-		if (developerMode && commandExecuted.getCommand().equals("die"))
+		if (developerMode && commandExecuted.getCommand().equals("die") && client.getLocalPlayer() != null)
 		{
 			die(client.getLocalPlayer().getWorldLocation(), Instant.now(), client.getWorld());
 		}
@@ -260,7 +270,7 @@ public class DeathIndicatorPlugin extends Plugin
 				worldMapPointManager.removeIf(DeathWorldMapPoint.class::isInstance);
 			}
 
-			if (!hasDied() || !config.retainInfo() && hasDied())
+			if (!hasDied())
 			{
 				client.clearHintArrow();
 
@@ -274,7 +284,7 @@ public class DeathIndicatorPlugin extends Plugin
 	@Subscribe
 	public void onGameStateChanged(GameStateChanged event)
 	{
-		if (config.retainInfo() || !hasDied())
+		if (!hasDied())
 		{
 			return;
 		}
