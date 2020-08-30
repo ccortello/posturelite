@@ -77,6 +77,17 @@ public interface DeathIndicatorConfig extends Config
 		return false;
 	}
 
+	@ConfigItem(
+			position = 5,
+			keyName = "debugDeathInfo",
+			name = "Output debug info for plugin",
+			description = "Click to output debugging info to IDE"
+	)
+	default boolean debugDeathInfo()
+	{
+		return false;
+	}
+
 	// Stored Data
 	@ConfigItem(
 			keyName = "deathWorld",

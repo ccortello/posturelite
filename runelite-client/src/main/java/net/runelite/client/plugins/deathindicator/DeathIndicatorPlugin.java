@@ -57,114 +57,97 @@ import java.time.temporal.ChronoUnit;
 import java.util.Set;
 
 @PluginDescriptor(
-		name = "Death Indicator",
-		description = "Show where you last died, and on what world",
-		tags = {"arrow", "hints", "world", "map", "overlay"}
+        name = "Death Indicator",
+        description = "Show where you last died, and on what world",
+        tags = {"arrow", "hints", "world", "map", "overlay"}
 )
 @Slf4j
-public class DeathIndicatorPlugin extends Plugin
-{
-	private static final String DEATH_TIMER_CLEAR = "Clear";
-	private static final Set<Integer> RESPAWN_REGIONS = ImmutableSet.of(
-			6457, // Kourend
-			12850, // Lumbridge
-			11828, // Falador
-			12342, // Edgeville
-			11062, // Camelot
-			13150, // Prifddinas (it's possible to spawn in 2 adjacent regions)
-			12894 // Prifddinas
-	);
+public class DeathIndicatorPlugin extends Plugin {
+    private static final String DEATH_TIMER_CLEAR = "Clear";
+    private static final Set<Integer> RESPAWN_REGIONS = ImmutableSet.of(
+            6457, // Kourend
+            12850, // Lumbridge
+            11828, // Falador
+            12342, // Edgeville
+            11062, // Camelot
+            13150, // Prifddinas (it's possible to spawn in 2 adjacent regions)
+            12894 // Prifddinas
+    );
+    @Inject
+    @Named("developerMode")
+    boolean developerMode;
+    @Inject
+    private Client client;
+    @Inject
+    private DeathIndicatorConfig config;
+    @Inject
+    private WorldMapPointManager worldMapPointManager;
+    @Inject
+    private InfoBoxManager infoBoxManager;
+    @Inject
+    private ItemManager itemManager;
+    private BufferedImage mapArrow;
 
-	@Inject
-	private Client client;
+    private Timer deathTimer;
 
-	@Inject
-	private DeathIndicatorConfig config;
+    private WorldPoint lastDeath;
+    private Instant lastDeathTime;
+    private int lastDeathWorld;
 
-	@Inject
-	private WorldMapPointManager worldMapPointManager;
+    @Provides
+    DeathIndicatorConfig deathIndicatorConfig(ConfigManager configManager) {
+        return configManager.getConfig(DeathIndicatorConfig.class);
+    }
 
-	@Inject
-	private InfoBoxManager infoBoxManager;
+    @Override
+    protected void startUp() {
+        if (!hasDied()) {
+            return;
+        }
 
-	@Inject
-	private ItemManager itemManager;
+        resetInfobox();
 
-	@Inject
-	@Named("developerMode")
-	boolean developerMode;
+        if (client.getWorld() != config.deathWorld()) {
+            return;
+        }
 
-	private BufferedImage mapArrow;
+        if (config.showDeathHintArrow()) {
+            if (!client.hasHintArrow()) {
+                client.setHintArrow(new WorldPoint(config.deathLocationX(), config.deathLocationY(),
+						config.deathLocationPlane()));
+            }
+        }
 
-	private Timer deathTimer;
+        if (config.showDeathOnWorldMap()) {
+            worldMapPointManager.removeIf(DeathWorldMapPoint.class::isInstance);
+            worldMapPointManager.add(new DeathWorldMapPoint(new WorldPoint(config.deathLocationX(),
+					config.deathLocationY(), config.deathLocationPlane()), this));
+        }
+    }
 
-	private WorldPoint lastDeath;
-	private Instant lastDeathTime;
-	private int lastDeathWorld;
+    @Override
+    protected void shutDown() {
+        if (client.hasHintArrow()) {
+            client.clearHintArrow();
+        }
 
-	@Provides
-	DeathIndicatorConfig deathIndicatorConfig(ConfigManager configManager)
-	{
-		return configManager.getConfig(DeathIndicatorConfig.class);
-	}
+        if (deathTimer != null) {
+            infoBoxManager.removeInfoBox(deathTimer);
+            deathTimer = null;
+        }
 
-	@Override
-	protected void startUp()
-	{
-		if (!hasDied())
-		{
-			return;
-		}
+        worldMapPointManager.removeIf(DeathWorldMapPoint.class::isInstance);
+    }
 
-		resetInfobox();
+    @Subscribe
+    public void onActorDeath(ActorDeath actorDeath) {
+        if ((config.retainInfo() && hasDied()) || client.getLocalPlayer() == null || client.isInInstancedRegion() || actorDeath.getActor() != client.getLocalPlayer())
+            return;
 
-		if (client.getWorld() != config.deathWorld())
-		{
-			return;
-		}
-
-		if (config.showDeathHintArrow())
-		{
-			if (!client.hasHintArrow())
-			{
-				client.setHintArrow(new WorldPoint(config.deathLocationX(), config.deathLocationY(), config.deathLocationPlane()));
-			}
-		}
-
-		if (config.showDeathOnWorldMap())
-		{
-			worldMapPointManager.removeIf(DeathWorldMapPoint.class::isInstance);
-			worldMapPointManager.add(new DeathWorldMapPoint(new WorldPoint(config.deathLocationX(), config.deathLocationY(), config.deathLocationPlane()), this));
-		}
-	}
-
-	@Override
-	protected void shutDown()
-	{
-		if (client.hasHintArrow())
-		{
-			client.clearHintArrow();
-		}
-
-		if (deathTimer != null)
-		{
-			infoBoxManager.removeInfoBox(deathTimer);
-			deathTimer = null;
-		}
-
-		worldMapPointManager.removeIf(DeathWorldMapPoint.class::isInstance);
-	}
-
-	@Subscribe
-	public void onActorDeath(ActorDeath actorDeath)
-	{
-		if ((config.retainInfo() && hasDied()) || client.getLocalPlayer() == null || client.isInInstancedRegion() || actorDeath.getActor() != client.getLocalPlayer())
-			return;
-
-		lastDeath = client.getLocalPlayer().getWorldLocation();
-		lastDeathWorld = client.getWorld();
-		lastDeathTime = Instant.now();
-	}
+        lastDeath = client.getLocalPlayer().getWorldLocation();
+        lastDeathWorld = client.getWorld();
+        lastDeathTime = Instant.now();
+    }
 
 	@Subscribe
 	public void onGameTick(GameTick event)
@@ -177,214 +160,187 @@ public class DeathIndicatorPlugin extends Plugin
 				log.debug("Died, but did not respawn in a known respawn location: {}",
 						client.getLocalPlayer().getWorldLocation().getRegionID());
 
-				lastDeath = null;
-				lastDeathTime = null;
-				return;
-			}
+					lastDeath = null;
+					lastDeathTime = null;
+					return;
+				}
 
-			log.debug("Died! Grave at {}", lastDeath);
+				log.debug("Died! Grave at {}", lastDeath);
 
-			die(lastDeath, lastDeathTime, lastDeathWorld);
+				die(lastDeath, lastDeathTime, lastDeathWorld);
 
 			lastDeath = null;
 			lastDeathTime = null;
 		}
 
-		if (!hasDied() || client.getWorld() != config.deathWorld() || config.retainInfo())
-			return;
+        if (!hasDied() || client.getWorld() != config.deathWorld())
+            return;
 
-		// timer up?
-		boolean reset = deathTimer != null && deathTimer.cull();
+        // timer up?
+        boolean reset = deathTimer != null && deathTimer.cull();
 
-		// no more items on the ground?
-		WorldPoint deathPoint = new WorldPoint(config.deathLocationX(), config.deathLocationY(), config.deathLocationPlane());
-		LocalPoint localPoint = LocalPoint.fromWorld(client, deathPoint);
-		if (localPoint != null)
-		{
-			Tile[][][] tiles = client.getScene().getTiles();
-			Tile tile = tiles[client.getPlane()][localPoint.getSceneX()][localPoint.getSceneY()];
-			if (tile == null || tile.getGroundItems() == null || tile.getGroundItems().isEmpty())
-			{
-				reset = true;
-			}
-		}
+        // no more items on the ground?
+        WorldPoint deathPoint = new WorldPoint(config.deathLocationX(), config.deathLocationY(),
+				config.deathLocationPlane());
+        LocalPoint localPoint = LocalPoint.fromWorld(client, deathPoint);
+        if (localPoint != null) {
+            Tile[][][] tiles = client.getScene().getTiles();
+            Tile tile = tiles[client.getPlane()][localPoint.getSceneX()][localPoint.getSceneY()];
+            if (tile == null || tile.getGroundItems() == null || tile.getGroundItems().isEmpty()) {
+                reset = true;
+            }
+        }
 
-		if (reset)
-		{
-			reset();
-
-			resetDeathConfig();
-		}
-	}
-
-	@Subscribe
-	public void onCommandExecuted(CommandExecuted commandExecuted)
-	{
-		if (developerMode && commandExecuted.getCommand().equals("die") && client.getLocalPlayer() != null)
-		{
-			die(client.getLocalPlayer().getWorldLocation(), Instant.now(), client.getWorld());
-		}
-	}
-
-	private void die(WorldPoint location, Instant time, int world)
-	{
-		// Save death to config
-		config.deathLocationX(location.getX());
-		config.deathLocationY(location.getY());
-		config.deathLocationPlane(location.getPlane());
-		config.timeOfDeath(time);
-		config.deathWorld(world);
-
-		if (config.showDeathHintArrow())
-		{
-			client.setHintArrow(location);
-		}
-
-		if (config.showDeathOnWorldMap())
-		{
-			worldMapPointManager.removeIf(DeathWorldMapPoint.class::isInstance);
-			worldMapPointManager.add(new DeathWorldMapPoint(location, this));
-		}
-
-		resetInfobox();
-	}
-
-	@Subscribe
-	public void onConfigChanged(ConfigChanged event)
-	{
-		if (event.getGroup().equals("deathIndicator") && !config.retainInfo())
-		{
-			if (!config.showDeathHintArrow() && hasDied())
-			{
-				client.clearHintArrow();
-			}
-
-			if (!config.showDeathInfoBox() && deathTimer != null)
-			{
-				infoBoxManager.removeInfoBox(deathTimer);
-				deathTimer = null;
-			}
-
-			if (!config.showDeathOnWorldMap())
-			{
-				worldMapPointManager.removeIf(DeathWorldMapPoint.class::isInstance);
-			}
-
-			if (!hasDied())
-			{
-				client.clearHintArrow();
-
-				resetInfobox();
-
-				worldMapPointManager.removeIf(DeathWorldMapPoint.class::isInstance);
-			}
-		}
-	}
-
-	@Subscribe
-	public void onGameStateChanged(GameStateChanged event)
-	{
-		if (!hasDied())
-		{
-			return;
-		}
-
-		if (event.getGameState() == GameState.LOGGED_IN)
-		{
-			if (client.getWorld() == config.deathWorld())
-			{
-				WorldPoint deathPoint = new WorldPoint(config.deathLocationX(), config.deathLocationY(), config.deathLocationPlane());
-
-				if (config.showDeathHintArrow())
-				{
-					client.setHintArrow(deathPoint);
-				}
-
-				if (config.showDeathOnWorldMap())
-				{
-					worldMapPointManager.removeIf(DeathWorldMapPoint.class::isInstance);
-					worldMapPointManager.add(new DeathWorldMapPoint(deathPoint, this));
-				}
-			}
-			else
-			{
-				worldMapPointManager.removeIf(DeathWorldMapPoint.class::isInstance);
-			}
-		}
-	}
-
-	@Subscribe
-	public void onInfoBoxMenuClicked(InfoBoxMenuClicked infoBoxMenuClicked)
-	{
-		if (infoBoxMenuClicked.getInfoBox() == deathTimer)
+		if (reset && !config.retainInfo())
 		{
 			reset();
-		}
-	}
 
-	private boolean hasDied()
-	{
-		return config.timeOfDeath() != null;
-	}
+            resetDeathConfig();
+        }
+    }
 
-	private void reset()
-	{
-		client.clearHintArrow();
+    @Subscribe
+    public void onCommandExecuted(CommandExecuted commandExecuted) {
+        if (developerMode && commandExecuted.getCommand().equals("die") && client.getLocalPlayer() != null) {
+            die(client.getLocalPlayer().getWorldLocation(), Instant.now(), client.getWorld());
+        }
+    }
 
-		if (deathTimer != null)
-		{
-			infoBoxManager.removeInfoBox(deathTimer);
-			deathTimer = null;
-		}
+    private void die(WorldPoint location, Instant time, int world) {
+        // Save death to config
+        config.deathLocationX(location.getX());
+        config.deathLocationY(location.getY());
+        config.deathLocationPlane(location.getPlane());
+        config.timeOfDeath(time);
+        config.deathWorld(world);
 
-		worldMapPointManager.removeIf(DeathWorldMapPoint.class::isInstance);
-	}
+        if (config.showDeathHintArrow()) {
+            client.setHintArrow(location);
+        }
 
-	private void resetDeathConfig()
-	{
-		config.deathLocationX(0);
-		config.deathLocationY(0);
-		config.deathLocationPlane(0);
-		config.deathWorld(0);
-		config.timeOfDeath(null);
-	}
+        if (config.showDeathOnWorldMap()) {
+            worldMapPointManager.removeIf(DeathWorldMapPoint.class::isInstance);
+            worldMapPointManager.add(new DeathWorldMapPoint(location, this));
+        }
 
-	private void resetInfobox()
-	{
-		if (deathTimer != null)
-		{
-			infoBoxManager.removeInfoBox(deathTimer);
-			deathTimer = null;
-		}
+        resetInfobox();
+    }
 
-		if (hasDied() && config.showDeathInfoBox())
-		{
-			Instant now = Instant.now();
-			Duration timeLeft = Duration.ofHours(1).minus(Duration.between(config.timeOfDeath(), now));
-			if (!timeLeft.isNegative() && !timeLeft.isZero())
-			{
-				deathTimer = new Timer(timeLeft.getSeconds(), ChronoUnit.SECONDS, getBonesImage(), this);
-				deathTimer.setTooltip("Died on world: " + config.deathWorld());
-				deathTimer.getMenuEntries().add(new OverlayMenuEntry(MenuAction.RUNELITE_INFOBOX, DEATH_TIMER_CLEAR, "Death Timer"));
-				infoBoxManager.addInfoBox(deathTimer);
-			}
-		}
-	}
+    @Subscribe
+    public void onConfigChanged(ConfigChanged event) {
+//    	if (config.debugDeathInfo()) {
+//			log.debug("\ndeathTimer={}\nlastDeath={}\nlastDeathTime={}\nlastDeathWorld={}\nconfigDeathWorld={}\nconfigDeathTime={}",
+//					deathTimer, lastDeath, lastDeathTime, lastDeathWorld, config.deathWorld(), config.timeOfDeath());
+//		}
+        if (event.getGroup().equals("deathIndicator")) {
+            if (!config.showDeathHintArrow()) {
+                client.clearHintArrow();
+            }
 
-	BufferedImage getMapArrow()
-	{
-		if (mapArrow != null)
-		{
-			return mapArrow;
-		}
+            if (!config.showDeathInfoBox() && deathTimer != null) {
+                infoBoxManager.removeInfoBox(deathTimer);
+                deathTimer = null;
+            }
 
-		mapArrow = ImageUtil.getResourceStreamFromClass(getClass(), "/util/clue_arrow.png");
+            if (!config.showDeathOnWorldMap()) {
+                worldMapPointManager.removeIf(DeathWorldMapPoint.class::isInstance);
+            }
 
-		return mapArrow;
-	}
+            if (!hasDied()) {
+                client.clearHintArrow();
 
-	BufferedImage getBonesImage()
-	{
-		return itemManager.getImage(ItemID.BONES);
-	}
+                resetInfobox();
+
+                worldMapPointManager.removeIf(DeathWorldMapPoint.class::isInstance);
+            }
+        }
+    }
+
+    @Subscribe
+    public void onGameStateChanged(GameStateChanged event) {
+        if (!hasDied()) {
+            return;
+        }
+
+        if (event.getGameState() == GameState.LOGGED_IN) {
+            if (client.getWorld() == config.deathWorld()) {
+                WorldPoint deathPoint = new WorldPoint(config.deathLocationX(), config.deathLocationY(),
+						config.deathLocationPlane());
+
+                if (config.showDeathHintArrow()) {
+                    client.setHintArrow(deathPoint);
+                }
+
+                if (config.showDeathOnWorldMap()) {
+                    worldMapPointManager.removeIf(DeathWorldMapPoint.class::isInstance);
+                    worldMapPointManager.add(new DeathWorldMapPoint(deathPoint, this));
+                }
+            } else {
+                worldMapPointManager.removeIf(DeathWorldMapPoint.class::isInstance);
+            }
+        }
+    }
+
+    @Subscribe
+    public void onInfoBoxMenuClicked(InfoBoxMenuClicked infoBoxMenuClicked) {
+        if (infoBoxMenuClicked.getInfoBox() == deathTimer) {
+            reset();
+        }
+    }
+
+    private boolean hasDied() {
+        return config.timeOfDeath() != null && (Duration.ofHours(1).compareTo(Duration.between(config.timeOfDeath(),
+				Instant.now())) > 0);
+    }
+
+    private void reset() {
+        client.clearHintArrow();
+
+        if (deathTimer != null) {
+            infoBoxManager.removeInfoBox(deathTimer);
+            deathTimer = null;
+        }
+
+        worldMapPointManager.removeIf(DeathWorldMapPoint.class::isInstance);
+    }
+
+    private void resetDeathConfig() {
+        config.deathLocationX(0);
+        config.deathLocationY(0);
+        config.deathLocationPlane(0);
+        config.deathWorld(0);
+        config.timeOfDeath(null);
+    }
+
+    private void resetInfobox() {
+        if (deathTimer != null) {
+            infoBoxManager.removeInfoBox(deathTimer);
+            deathTimer = null;
+        }
+
+        if (hasDied() && config.showDeathInfoBox()) {
+            Instant now = Instant.now();
+            Duration timeLeft = Duration.ofHours(1).minus(Duration.between(config.timeOfDeath(), now));
+            if (!timeLeft.isNegative() && !timeLeft.isZero()) {
+                deathTimer = new Timer(timeLeft.getSeconds(), ChronoUnit.SECONDS, getBonesImage(), this);
+                deathTimer.setTooltip("Died on world: " + config.deathWorld());
+                deathTimer.getMenuEntries().add(new OverlayMenuEntry(MenuAction.RUNELITE_INFOBOX, DEATH_TIMER_CLEAR, "Death Timer"));
+                infoBoxManager.addInfoBox(deathTimer);
+            }
+        }
+    }
+
+    BufferedImage getMapArrow() {
+        if (mapArrow != null) {
+            return mapArrow;
+        }
+
+        mapArrow = ImageUtil.getResourceStreamFromClass(getClass(), "/util/clue_arrow.png");
+
+        return mapArrow;
+    }
+
+    BufferedImage getBonesImage() {
+        return itemManager.getImage(ItemID.BONES);
+    }
 }
