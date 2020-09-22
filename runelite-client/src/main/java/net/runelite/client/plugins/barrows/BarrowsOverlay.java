@@ -24,16 +24,19 @@
  */
 package net.runelite.client.plugins.barrows;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.util.List;
+import javax.inject.Inject;
+
 import net.runelite.api.*;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.widgets.Widget;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
-
-import javax.inject.Inject;
-import java.awt.*;
-import java.util.List;
 
 class BarrowsOverlay extends Overlay
 {

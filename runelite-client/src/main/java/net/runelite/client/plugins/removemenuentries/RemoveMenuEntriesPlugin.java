@@ -50,7 +50,6 @@ public class RemoveMenuEntriesPlugin extends Plugin {
             MenuAction.EXAMINE_NPC, MenuAction.EXAMINE_OBJECT);
     private static Set<String> NPCsToRemove;
     private static Set<String> lootToRemove;
-    private static Map<String, String> customEntries;
 
     @Inject
     private Client client;
@@ -58,10 +57,11 @@ public class RemoveMenuEntriesPlugin extends Plugin {
     private RemoveMenuEntriesConfig config;
     @Inject
     private ShiftClickInputListener inputListener;
-    @Setter
-    private boolean shiftModifier = false;
     @Inject
     private KeyManager keyManager;
+
+    @Setter
+    private boolean shiftModifier = false;
 
     @Provides
     RemoveMenuEntriesConfig provideConfig(ConfigManager configManager) {
@@ -126,7 +126,8 @@ public class RemoveMenuEntriesPlugin extends Plugin {
                 && !(config.removePlayerFollow() && entryType == MenuAction.FOLLOW.getId())
                 && !(config.removeNPCs() && npc != null && npc.getName() != null && NPCsToRemove.contains(npc.getName().toLowerCase()))
                 && !(config.removeLoot() && GROUND_OPTIONS.contains(MenuAction.of(entryType)) && lootToRemove.contains(client.getItemDefinition(entry.getIdentifier()).getName().toLowerCase()))
-                && !(config.shiftWalkUnder() && shiftModifier && onNPC(entryType) && (entry.getIdentifier() != 0 && !RUNELITE_ACTIONS.contains(entryType))));
+                && !(config.shiftWalkUnder() && shiftModifier && onNPC(entryType) && (entry.getIdentifier() != 0 && !RUNELITE_ACTIONS.contains(entryType)))
+                && !(config.reanimateOnlyHeads() && entryType == MenuAction.SPELL_CAST_ON_GROUND_ITEM.getId() && !(client.getItemDefinition(entry.getIdentifier()).getName().toLowerCase().contains("ensouled"))));
     }
 
     // Copied from NpcIndicatorsPlugin

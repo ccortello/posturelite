@@ -25,13 +25,12 @@
  */
 package net.runelite.client.plugins.worldhopper;
 
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.Keybind;
-
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 
 @ConfigGroup(WorldHopperConfig.GROUP)
 public interface WorldHopperConfig extends Config

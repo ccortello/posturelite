@@ -8,10 +8,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.coords.WorldPoint;
-import net.runelite.api.events.FocusChanged;
-import net.runelite.api.events.ItemContainerChanged;
-import net.runelite.api.events.MenuEntryAdded;
-import net.runelite.api.events.MenuOptionClicked;
+import net.runelite.api.events.*;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
@@ -270,6 +267,8 @@ public class FastGamingPlugin extends Plugin {
                         break;
                     }
                 }
+            } else if (identifier == ItemID.CAMULET && client.getWidget(219, 1) != null) { // tele menu open
+                customEntry = setMenuEntry("Enakhra's Temple Entrance", "", 0, MenuAction.WIDGET_TYPE_6.getId(), 2, 14352385);
             }
         }
         
@@ -308,7 +307,7 @@ public class FastGamingPlugin extends Plugin {
                 }
             }
 
-            if (client.getWidget(219, 1) != null) { // not clicking inventory item, rowboat widgit open
+            else if (client.getWidget(219, 1) != null) { // not clicking inventory item, rowboat widgit open
                 switch (event.getIdentifier()) {
                     case 30914:
                         customEntry = setMenuEntry("Row north", "", 0, MenuAction.WIDGET_TYPE_6.getId(), 2, 14352385);

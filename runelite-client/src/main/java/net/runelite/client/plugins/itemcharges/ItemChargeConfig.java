@@ -25,12 +25,11 @@
  */
 package net.runelite.client.plugins.itemcharges;
 
+import java.awt.Color;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigSection;
-
-import java.awt.*;
 
 @ConfigGroup("itemCharge")
 public interface ItemChargeConfig extends Config
@@ -448,17 +447,6 @@ public interface ItemChargeConfig extends Config
 		section = chargesSection
 	)
 	default boolean showPotionDoseCount()
-	{
-		return false;
-	}
-
-	@ConfigItem(
-		keyName = "hideFullPotionCharges",
-		name = "Hide Full Potion Charges",
-		description = "Configures if full potion doses are shown",
-		position = 26
-	)
-	default boolean hideFullPotionCharges()
 	{
 		return false;
 	}

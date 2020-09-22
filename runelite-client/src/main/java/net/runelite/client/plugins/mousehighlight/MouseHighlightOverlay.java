@@ -26,6 +26,10 @@ package net.runelite.client.plugins.mousehighlight;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.util.Set;
+import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.MenuAction;
 import net.runelite.api.MenuEntry;
@@ -36,10 +40,6 @@ import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.tooltip.Tooltip;
 import net.runelite.client.ui.overlay.tooltip.TooltipManager;
-
-import javax.inject.Inject;
-import java.awt.*;
-import java.util.Set;
 
 class MouseHighlightOverlay extends Overlay
 {

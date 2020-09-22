@@ -25,9 +25,14 @@
  */
 package net.runelite.client.plugins.slayer;
 
-import net.runelite.client.config.*;
+import java.awt.Color;
 
-import java.awt.*;
+import net.runelite.client.config.Alpha;
+import net.runelite.client.config.Config;
+import net.runelite.client.config.ConfigGroup;
+import net.runelite.client.config.ConfigItem;
+import net.runelite.client.config.ConfigSection;
+import net.runelite.client.config.Units;
 
 @ConfigGroup("slayer")
 public interface SlayerConfig extends Config

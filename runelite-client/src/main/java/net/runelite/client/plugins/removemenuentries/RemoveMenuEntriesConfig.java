@@ -54,6 +54,13 @@ public interface RemoveMenuEntriesConfig extends Config {
     default boolean removePlayerFollow() {return false;}
 
     @ConfigItem(
+            keyName = "reanimateOnlyHeads",
+            name = "Reanimate only heads",
+            description = "Remove all entries without 'Ensouled' when reanimating"
+    )
+    default boolean reanimateOnlyHeads() {return false;}
+
+    @ConfigItem(
             position = 100,
             keyName = "removeNPCs",
             name = "Remove specific NPC entries",

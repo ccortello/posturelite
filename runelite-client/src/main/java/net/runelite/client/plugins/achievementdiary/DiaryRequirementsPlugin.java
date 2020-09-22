@@ -25,6 +25,13 @@
  */
 package net.runelite.client.plugins.achievementdiary;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.FontTypeFace;
@@ -37,12 +44,19 @@ import net.runelite.client.callback.ClientThread;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.achievementdiary.diaries.*;
+import net.runelite.client.plugins.achievementdiary.diaries.ArdougneDiaryRequirement;
+import net.runelite.client.plugins.achievementdiary.diaries.DesertDiaryRequirement;
+import net.runelite.client.plugins.achievementdiary.diaries.FaladorDiaryRequirement;
+import net.runelite.client.plugins.achievementdiary.diaries.FremennikDiaryRequirement;
+import net.runelite.client.plugins.achievementdiary.diaries.KandarinDiaryRequirement;
+import net.runelite.client.plugins.achievementdiary.diaries.KaramjaDiaryRequirement;
+import net.runelite.client.plugins.achievementdiary.diaries.KourendDiaryRequirement;
+import net.runelite.client.plugins.achievementdiary.diaries.LumbridgeDiaryRequirement;
+import net.runelite.client.plugins.achievementdiary.diaries.MorytaniaDiaryRequirement;
+import net.runelite.client.plugins.achievementdiary.diaries.VarrockDiaryRequirement;
+import net.runelite.client.plugins.achievementdiary.diaries.WesternDiaryRequirement;
+import net.runelite.client.plugins.achievementdiary.diaries.WildernessDiaryRequirement;
 import net.runelite.client.util.Text;
-
-import javax.inject.Inject;
-import java.util.*;
-import java.util.regex.Pattern;
 
 @Slf4j
 @PluginDescriptor(

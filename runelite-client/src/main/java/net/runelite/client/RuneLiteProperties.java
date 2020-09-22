@@ -24,12 +24,11 @@
  */
 package net.runelite.client;
 
-import okhttp3.HttpUrl;
-
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import javax.annotation.Nullable;
+import okhttp3.HttpUrl;
 
 public class RuneLiteProperties
 {

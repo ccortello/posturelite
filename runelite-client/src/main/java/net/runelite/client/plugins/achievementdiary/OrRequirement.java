@@ -26,10 +26,9 @@ package net.runelite.client.plugins.achievementdiary;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
+import java.util.List;
 import lombok.Getter;
 import net.runelite.api.Client;
-
-import java.util.List;
 
 public class OrRequirement implements Requirement
 {

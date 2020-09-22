@@ -25,6 +25,8 @@
 package net.runelite.client.plugins.antidrag;
 
 import com.google.inject.Provides;
+import java.awt.event.KeyEvent;
+import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.Varbits;
@@ -42,9 +44,6 @@ import net.runelite.client.input.KeyListener;
 import net.runelite.client.input.KeyManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-
-import javax.inject.Inject;
-import java.awt.event.KeyEvent;
 
 @PluginDescriptor(
 	name = "Anti Drag",

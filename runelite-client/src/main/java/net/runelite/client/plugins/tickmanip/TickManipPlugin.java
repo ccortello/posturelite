@@ -40,6 +40,7 @@ public class TickManipPlugin extends Plugin {
     private static final ImmutableSet<Integer> FISHING_RODS = ImmutableSet.of(ItemID.BARBARIAN_ROD, ItemID.FISHING_ROD,
             ItemID.FLY_FISHING_ROD, ItemID.OILY_FISHING_ROD, ItemID.OILY_PEARL_FISHING_ROD, ItemID.PEARL_FISHING_ROD,
             ItemID.PEARL_FLY_FISHING_ROD);
+    private static final ImmutableSet<Integer> FLETCH_ITEMS = ImmutableSet.of(ItemID.KNIFE, ItemID.TEAK_LOGS, ItemID.MAHOGANY_LOGS);
     private static final Splitter STRING_SPLITTER = Splitter.onPattern("[,\r?\n]+").trimResults().omitEmptyStrings();
     private static HashSet<String> bones;
     private static ItemContainer inventory;
@@ -48,8 +49,9 @@ public class TickManipPlugin extends Plugin {
     private static boolean enable3tickFishing = false;
     private static boolean enable3tickMining = false;
     private static boolean hasntCooked = true;
-    private static int lastUsedBones;
     private static boolean lastClickedKnife = false;
+    private static boolean preventFletch = false;
+    private static int lastUsedBones;
     private static String fishingState = "inactive";
     private static String miningState = "inactive";
     @Inject
@@ -90,6 +92,10 @@ public class TickManipPlugin extends Plugin {
     @Subscribe
     public void onGameTick(GameTick event) {
         hasntCooked = true;
+        if (preventFletch) {
+            preventFletch = false;
+            log.debug("allowing fletching");
+        }
     }
 
     private boolean enable3tickMining() {
@@ -134,14 +140,19 @@ public class TickManipPlugin extends Plugin {
         final String target = Text.removeTags(event.getMenuTarget()).toLowerCase();
 
         // osrs remembers last item that you clicked use on, so only enable fast use when correct item was last clicked
-        if (event.getWidgetId() == 9764864 && event.getMenuAction().equals(MenuAction.ITEM_USE)) {
-            lastClickedKnife = event.getId() == ItemID.KNIFE;
+        if (event.getWidgetId() == 9764864) {
+            if (event.getMenuAction().equals(MenuAction.ITEM_USE)) {
+                lastClickedKnife = event.getId() == ItemID.KNIFE;
 
-            if (bones.contains(client.getItemDefinition(event.getId()).getName().toLowerCase()))
-                lastUsedBones = event.getActionParam();
-            else
-                lastUsedBones = -1;
-//            log.debug("lastUsedBones={}", lastUsedBones);
+                if (bones.contains(client.getItemDefinition(event.getId()).getName().toLowerCase()))
+                    lastUsedBones = event.getActionParam();
+                else
+                    lastUsedBones = -1;
+                //            log.debug("lastUsedBones={}", lastUsedBones);
+            } else if (event.getMenuAction().equals(MenuAction.ITEM_USE_ON_WIDGET_ITEM) && FLETCH_ITEMS.contains(event.getId())) {
+                preventFletch = true;
+                log.debug("fletched, preventing fletching");
+            }
         }
 
         if (target.contains("fire") && hasntCooked)
@@ -198,6 +209,7 @@ public class TickManipPlugin extends Plugin {
                 && (miningState.equals("inactive") || (miningState.equals("mining")))
                 && (!config.excludeSandstone() || event.getIdentifier() != 11386)
                 && (!config.excludeEmptyRocks() || (event.getIdentifier() != 11390 && event.getIdentifier() != 11391))) {
+//                && !preventFletch) {
             for (int i = 0; i < items.length - 1; i++) {
                 int currentID = items[i].getId();
                 if (currentID == ItemID.TEAK_LOGS || currentID == ItemID.MAHOGANY_LOGS) {
@@ -209,7 +221,7 @@ public class TickManipPlugin extends Plugin {
         }
 
         if (config.enable3tFishing() && enable3tickFishing && target.equals("fishing spot") && option.equals("use-rod")
-                && fishingState.equals("fishing")) {
+                && fishingState.equals("fishing")) {// && !preventFletch) {
             for (int i = 0; i < items.length - 1; i++) {
                 int currentID = items[i].getId();
                 if (currentID == ItemID.TEAK_LOGS || currentID == ItemID.MAHOGANY_LOGS) {

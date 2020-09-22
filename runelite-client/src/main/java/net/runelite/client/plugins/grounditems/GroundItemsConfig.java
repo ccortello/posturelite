@@ -25,10 +25,17 @@
 
 package net.runelite.client.plugins.grounditems;
 
-import net.runelite.client.config.*;
-import net.runelite.client.plugins.grounditems.config.*;
-
-import java.awt.*;
+import java.awt.Color;
+import net.runelite.client.config.Config;
+import net.runelite.client.config.ConfigGroup;
+import net.runelite.client.config.ConfigItem;
+import net.runelite.client.config.Units;
+import net.runelite.client.config.ConfigSection;
+import net.runelite.client.plugins.grounditems.config.HighlightTier;
+import net.runelite.client.plugins.grounditems.config.ItemHighlightMode;
+import net.runelite.client.plugins.grounditems.config.MenuHighlightMode;
+import net.runelite.client.plugins.grounditems.config.PriceDisplayMode;
+import net.runelite.client.plugins.grounditems.config.ValueCalculationMode;
 
 @ConfigGroup("grounditems")
 public interface GroundItemsConfig extends Config
@@ -78,25 +85,6 @@ public interface GroundItemsConfig extends Config
 		description = ""
 	)
 	void setHiddenItems(String key);
-
-	@ConfigItem(
-		keyName = "dontHideItems",
-		name = "Don't Hide Items",
-		description = "Configures ground items which are never hidden. Format: (item), (item)",
-		position = 2,
-		section = itemLists
-	)
-	default String getDontHideItems()
-	{
-		return "";
-	}
-
-	@ConfigItem(
-		keyName = "dontHideItems",
-		name = "",
-		description = ""
-	)
-	void setDontHideItems(String key);
 
 	@ConfigItem(
 		keyName = "showHighlightedOnly",
@@ -230,7 +218,6 @@ public interface GroundItemsConfig extends Config
 		return 0;
 	}
 
-	@Alpha
 	@ConfigItem(
 		keyName = "defaultColor",
 		name = "Default items color",
@@ -242,7 +229,6 @@ public interface GroundItemsConfig extends Config
 		return Color.WHITE;
 	}
 
-	@Alpha
 	@ConfigItem(
 		keyName = "highlightedColor",
 		name = "Highlighted items color",
@@ -254,7 +240,6 @@ public interface GroundItemsConfig extends Config
 		return Color.decode("#AA00FF");
 	}
 
-	@Alpha
 	@ConfigItem(
 		keyName = "hiddenColor",
 		name = "Hidden items color",
@@ -266,7 +251,6 @@ public interface GroundItemsConfig extends Config
 		return Color.GRAY;
 	}
 
-	@Alpha
 	@ConfigItem(
 		keyName = "lowValueColor",
 		name = "Low value items color",
@@ -278,7 +262,6 @@ public interface GroundItemsConfig extends Config
 		return Color.decode("#66B2FF");
 	}
 
-	@Alpha
 	@ConfigItem(
 		keyName = "lowValuePrice",
 		name = "Low value price",
@@ -290,7 +273,6 @@ public interface GroundItemsConfig extends Config
 		return 20000;
 	}
 
-	@Alpha
 	@ConfigItem(
 		keyName = "mediumValueColor",
 		name = "Medium value items color",

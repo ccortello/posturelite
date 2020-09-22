@@ -26,6 +26,11 @@
 package net.runelite.client.plugins.barbarianassault;
 
 import com.google.inject.Provides;
+import java.awt.Font;
+import java.awt.Image;
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Inject;
 import lombok.Getter;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
@@ -49,11 +54,6 @@ import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ImageUtil;
-
-import javax.inject.Inject;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @PluginDescriptor(
 	name = "Barbarian Assault",
