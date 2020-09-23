@@ -144,7 +144,7 @@ public class RuneLiteProperties
 	public static HttpUrl getPluginHubBase()
 	{
 //		String version = System.getProperty(PLUGINHUB_VERSION, properties.getProperty(PLUGINHUB_VERSION));
-		String version = "1.6.26";
+		String version = "1.6.27";
 		return HttpUrl.parse(properties.get(PLUGINHUB_BASE) + "/" + version);
 	}
 
