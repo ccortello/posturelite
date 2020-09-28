@@ -522,7 +522,7 @@ public class XpTrackerPlugin extends Plugin
 		}
 		catch (IllegalArgumentException ex)
 		{
-			log.debug(null, ex);
+//			log.debug(null, ex);
 			return;
 		}
 

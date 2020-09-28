@@ -114,10 +114,10 @@ public class QuinnMasterFarmersPlugin extends Plugin {
 
 //        log.debug("currentItems={}, timeToDrop={}, foundShitSeeds={}", currentItems, timeToDrop, foundShitSeeds);
 
-        if (timeToDrop)
-            for (Item item : items)
-                if (item.getId() != -1)
-                    log.debug("found item called {} with quantity {}", client.getItemDefinition(item.getId()).getName(), item.getQuantity());
+//        if (timeToDrop)
+//            for (Item item : items)
+//                if (item.getId() != -1)
+//                    log.debug("found item called {} with quantity {}", client.getItemDefinition(item.getId()).getName(), item.getQuantity());
     }
 
     @Subscribe

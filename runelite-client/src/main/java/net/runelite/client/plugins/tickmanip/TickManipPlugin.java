@@ -99,24 +99,23 @@ public class TickManipPlugin extends Plugin {
     }
 
     private boolean enable3tickMining() {
-        if (inventory == null || equipment == null)
+        if (inventory == null || equipment == null || !lastClickedKnife || !inventory.contains(ItemID.KNIFE)
+                || !(inventory.contains(ItemID.TEAK_LOGS) || inventory.contains(ItemID.MAHOGANY_LOGS)))
             return false;
 
         for (int pickaxe : PICKAXES)
             if (inventory.contains(pickaxe) || equipment.contains(pickaxe))
-                return lastClickedKnife && inventory.contains(ItemID.KNIFE) && lastClickedKnife
-                        && (inventory.contains(ItemID.TEAK_LOGS) || inventory.contains(ItemID.MAHOGANY_LOGS));
+                return true;
         return false;
     }
 
     private boolean enable3tickFishing() {
-        if (inventory == null || equipment == null)
+        if (inventory == null || equipment == null || !inventory.contains(ItemID.KNIFE)
+                || !(inventory.contains(ItemID.TEAK_LOGS) || inventory.contains(ItemID.MAHOGANY_LOGS)))
             return false;
-
         for (int rod : FISHING_RODS)
             if (inventory.contains(rod) || equipment.contains(rod))
-                return inventory.contains(ItemID.KNIFE)
-                        && (inventory.contains(ItemID.TEAK_LOGS) || inventory.contains(ItemID.MAHOGANY_LOGS));
+                return true;
         return false;
     }
 
@@ -157,10 +156,11 @@ public class TickManipPlugin extends Plugin {
 
         if (target.contains("fire") && hasntCooked)
             hasntCooked = false;
+
         if (option.equals("mine") && target.equals("rocks")) {
             miningState = "mining";
 //            log.debug("mining state={}", miningState);
-        } else if (option.equals("use-rod") && target.equals("fishing spot") && lastClickedKnife) {
+        } else if (option.equals("use-rod") && target.equals("fishing spot")) {// && lastClickedKnife) {
             fishingState = "fishing";
 //            log.debug("fishing state={}", fishingState);
         } else if (option.equals("use") && (target.equals("knife -> teak logs") || target.equals("knife -> mahogany " +
@@ -171,6 +171,7 @@ public class TickManipPlugin extends Plugin {
         } else if (event.getMenuAction().equals(MenuAction.ITEM_DROP)) {
             miningState = "dropping";
             fishingState = "dropping";
+//            log.debug("fishing state={}, mining state={}", fishingState, miningState);
         } else if (event.getId() != 1){
             miningState = "inactive";
             fishingState = "inactive";
@@ -205,8 +206,7 @@ public class TickManipPlugin extends Plugin {
             }
         }
 
-        if (config.enable3tMining() && enable3tickMining && option.equals("examine") && target.equals("rocks")
-                && (miningState.equals("inactive") || (miningState.equals("mining")))
+        if (config.enable3tMining() && enable3tickMining && option.equals("examine") && target.equals("rocks") && (miningState.equals("mining"))
                 && (!config.excludeSandstone() || event.getIdentifier() != 11386)
                 && (!config.excludeEmptyRocks() || (event.getIdentifier() != 11390 && event.getIdentifier() != 11391))) {
 //                && !preventFletch) {

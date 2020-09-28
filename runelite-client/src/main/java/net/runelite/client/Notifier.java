@@ -203,7 +203,7 @@ public class Notifier
 			mouseLastPressedMillis = client.getMouseLastPressedMillis();
 		}
 
-		log.debug(message);
+//		log.debug(message);
 	}
 
 	public void processFlash(final Graphics2D graphics)

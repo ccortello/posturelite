@@ -79,9 +79,9 @@ import okhttp3.Response;
 public class ClientLoader implements Supplier<Applet>
 {
 	private static final int NUM_ATTEMPTS = 6;
-	private static File LOCK_FILE = new File(RuneLite.CACHE_DIR, "cache.lock");
-	private static File VANILLA_CACHE = new File(RuneLite.CACHE_DIR, "vanilla.cache");
-	private static File PATCHED_CACHE = new File(RuneLite.CACHE_DIR, "patched.cache");
+	private static final File LOCK_FILE = new File(RuneLite.CACHE_DIR, "cache.lock");
+	private static final File VANILLA_CACHE = new File(RuneLite.CACHE_DIR, "vanilla.cache");
+	private static final File PATCHED_CACHE = new File(RuneLite.CACHE_DIR, "patched.cache");
 
 	private final OkHttpClient okHttpClient;
 	private final ClientConfigLoader clientConfigLoader;
@@ -543,7 +543,7 @@ public class ClientLoader implements Supplier<Applet>
 
 		if (rs instanceof Client)
 		{
-			log.info("client-patch {}", ((Client) rs).getBuildID());
+//			log.info("client-patch {}", ((Client) rs).getBuildID());
 		}
 
 		return rs;
