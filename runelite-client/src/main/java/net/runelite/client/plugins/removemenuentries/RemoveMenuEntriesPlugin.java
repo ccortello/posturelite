@@ -114,17 +114,17 @@ public class RemoveMenuEntriesPlugin extends Plugin {
 
     private boolean customEntryFilter(MenuEntry entry) {
 
-        NPC npc = null;
-        if (client.getCachedNPCs().length > entry.getIdentifier())
-            npc = client.getCachedNPCs()[entry.getIdentifier()];
-
         int entryType = entry.getType();
 
-        return (!(config.removeDeadNPCs() && onNPC(entryType) && npc != null && npc.isDead())
+        NPC npc = null;
+        if ((config.removeDeadNPCs() || config.removeNPCs()) && onNPC(entryType) && client.getCachedNPCs().length > entry.getIdentifier())
+            npc = client.getCachedNPCs()[entry.getIdentifier()];
+
+        return (!(config.removeDeadNPCs() && npc != null && npc.isDead())
+                && !(config.removeNPCs() && npc != null && npc.getName() != null && NPCsToRemove.contains(npc.getName().toLowerCase()))
                 && !(config.removeItemsOnPlayers() && entryType == MenuAction.ITEM_USE_ON_PLAYER.getId())
                 && !(config.removePlayerTrade() && entryType == MenuAction.TRADE.getId())
                 && !(config.removePlayerFollow() && entryType == MenuAction.FOLLOW.getId())
-                && !(config.removeNPCs() && npc != null && npc.getName() != null && NPCsToRemove.contains(npc.getName().toLowerCase()))
                 && !(config.removeLoot() && GROUND_OPTIONS.contains(MenuAction.of(entryType)) && lootToRemove.contains(client.getItemDefinition(entry.getIdentifier()).getName().toLowerCase()))
                 && !(config.shiftWalkUnder() && shiftModifier && onNPC(entryType) && (entry.getIdentifier() != 0 && !RUNELITE_ACTIONS.contains(entryType)))
                 && !(config.reanimateOnlyHeads() && entryType == MenuAction.SPELL_CAST_ON_GROUND_ITEM.getId() && !(client.getItemDefinition(entry.getIdentifier()).getName().toLowerCase().contains("ensouled"))));

@@ -6,7 +6,14 @@ import com.google.common.collect.ObjectArrays;
 import com.google.common.collect.Sets;
 import com.google.inject.Provides;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.*;
+import net.runelite.api.Client;
+import net.runelite.api.GameState;
+import net.runelite.api.InventoryID;
+import net.runelite.api.Item;
+import net.runelite.api.ItemContainer;
+import net.runelite.api.ItemID;
+import net.runelite.api.MenuAction;
+import net.runelite.api.MenuEntry;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.ItemContainerChanged;
 import net.runelite.api.events.MenuEntryAdded;
@@ -94,7 +101,7 @@ public class TickManipPlugin extends Plugin {
         hasntCooked = true;
         if (preventFletch) {
             preventFletch = false;
-            log.debug("allowing fletching");
+//            log.debug("allowing fletching");
         }
     }
 
@@ -150,7 +157,7 @@ public class TickManipPlugin extends Plugin {
                 //            log.debug("lastUsedBones={}", lastUsedBones);
             } else if (event.getMenuAction().equals(MenuAction.ITEM_USE_ON_WIDGET_ITEM) && FLETCH_ITEMS.contains(event.getId())) {
                 preventFletch = true;
-                log.debug("fletched, preventing fletching");
+//                log.debug("fletched, preventing fletching");
             }
         }
 
@@ -206,7 +213,7 @@ public class TickManipPlugin extends Plugin {
             }
         }
 
-        if (config.enable3tMining() && enable3tickMining && option.equals("examine") && target.equals("rocks") && (miningState.equals("mining"))
+        if (config.enable3tMining() && enable3tickMining && lastClickedKnife && option.equals("examine") && target.equals("rocks") && (miningState.equals("mining"))
                 && (!config.excludeSandstone() || event.getIdentifier() != 11386)
                 && (!config.excludeEmptyRocks() || (event.getIdentifier() != 11390 && event.getIdentifier() != 11391))) {
 //                && !preventFletch) {
@@ -220,7 +227,7 @@ public class TickManipPlugin extends Plugin {
             }
         }
 
-        if (config.enable3tFishing() && enable3tickFishing && target.equals("fishing spot") && option.equals("use-rod")
+        if (config.enable3tFishing() && enable3tickFishing && lastClickedKnife && target.equals("fishing spot") && option.equals("use-rod")
                 && fishingState.equals("fishing")) {// && !preventFletch) {
             for (int i = 0; i < items.length - 1; i++) {
                 int currentID = items[i].getId();

@@ -145,8 +145,8 @@ public class FastGamingPlugin extends Plugin {
                 enableFastSacredEels = id == ItemID.KNIFE;
                 enableFastNestCrushing = id == ItemID.PESTLE_AND_MORTAR;
                 lastClickedPipe = id == ItemID.GLASSBLOWING_PIPE;
-                log.debug("enableFastEssenceChiseling={}, enableFastSacredEels={}, enableFastNestCrushing={}, lastClickedPipe={}",
-                        enableFastEssenceChiseling, enableFastSacredEels, enableFastNestCrushing, lastClickedPipe);
+//                log.debug("enableFastEssenceChiseling={}, enableFastSacredEels={}, enableFastNestCrushing={}, lastClickedPipe={}",
+//                        enableFastEssenceChiseling, enableFastSacredEels, enableFastNestCrushing, lastClickedPipe);
             }
 
             justDroppedEmptylightorbs = (event.getMenuAction().equals(MenuAction.ITEM_DROP) && event.getId() == ItemID.EMPTY_LIGHT_ORB
