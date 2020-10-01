@@ -32,7 +32,7 @@ import net.runelite.client.config.ConfigSection;
 @ConfigGroup(MenuEntrySwapperConfig.GROUP)
 public interface MenuEntrySwapperConfig extends Config
 {
-	String GROUP = "newmenuentryswapper";
+	String GROUP = "menuentryswapper";
 
 	@ConfigSection(
 		name = "Item Swaps",
@@ -559,6 +559,17 @@ public interface MenuEntrySwapperConfig extends Config
 		section = uiSection
 	)
 	default boolean swapTan()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "swapCollectMiscellania",
+		name = "Miscellania",
+		description = "Swap Talk-to with Collect for Advisor Ghrim",
+		section = npcSection
+	)
+	default boolean swapCollectMiscellania()
 	{
 		return false;
 	}
