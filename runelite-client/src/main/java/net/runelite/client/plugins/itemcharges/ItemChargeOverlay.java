@@ -135,7 +135,7 @@ class ItemChargeOverlay extends WidgetItemOverlay
 				|| (type == ABYSSAL_BRACELET && !config.showAbyssalBraceletCharges())
 				|| (type == AMULET_OF_CHEMISTRY && !config.showAmuletOfChemistryCharges())
 				|| (type == AMULET_OF_BOUNTY && !config.showAmuletOfBountyCharges())
-				|| (type == POTION && !config.showPotionDoseCount()))
+				|| (type == POTION && (!config.showPotionDoseCount() || config.hideFullPotionDose() && chargeItem.getCharges() == 4)))
 			{
 				return;
 			}

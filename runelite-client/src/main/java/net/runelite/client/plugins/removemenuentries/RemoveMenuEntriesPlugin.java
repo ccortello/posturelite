@@ -91,7 +91,6 @@ public class RemoveMenuEntriesPlugin extends Plugin {
 
     @Subscribe
     public void onMenuOpened(MenuOpened event) {
-
         if (client.getLocalPlayer() != null && config.removeExamine())
             client.setMenuEntries(Arrays.stream(event.getMenuEntries()).filter(this::examineFilter).toArray(MenuEntry[]::new));
     }
@@ -127,7 +126,8 @@ public class RemoveMenuEntriesPlugin extends Plugin {
                 && !(config.removePlayerFollow() && entryType == MenuAction.FOLLOW.getId())
                 && !(config.removeLoot() && GROUND_OPTIONS.contains(MenuAction.of(entryType)) && lootToRemove.contains(client.getItemDefinition(entry.getIdentifier()).getName().toLowerCase()))
                 && !(config.shiftWalkUnder() && shiftModifier && onNPC(entryType) && (entry.getIdentifier() != 0 && !RUNELITE_ACTIONS.contains(entryType)))
-                && !(config.reanimateOnlyHeads() && entryType == MenuAction.SPELL_CAST_ON_GROUND_ITEM.getId() && !(client.getItemDefinition(entry.getIdentifier()).getName().toLowerCase().contains("ensouled"))));
+                && !(config.reanimateOnlyHeads() && entryType == MenuAction.SPELL_CAST_ON_GROUND_ITEM.getId() && entry.getTarget().contains("Reanimate")
+                    && !(client.getItemDefinition(entry.getIdentifier()).getName().contains("Ensouled"))));
     }
 
     // Copied from NpcIndicatorsPlugin

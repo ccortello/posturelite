@@ -450,4 +450,16 @@ public interface ItemChargeConfig extends Config
 	{
 		return false;
 	}
+
+	@ConfigItem(
+		keyName = "hideFullPotionDose",
+		name = "Hide Full Potion Doses",
+		description = "Hide remaining potion doses if potion is full",
+		position = 26,
+		section = chargesSection
+	)
+	default boolean hideFullPotionDose()
+	{
+		return false;
+	}
 }
