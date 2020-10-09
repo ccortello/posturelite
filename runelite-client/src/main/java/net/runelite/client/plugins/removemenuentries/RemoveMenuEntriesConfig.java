@@ -3,6 +3,7 @@ package net.runelite.client.plugins.removemenuentries;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
+import net.runelite.client.config.ConfigSection;
 
 @ConfigGroup("removemenuentries")
 public interface RemoveMenuEntriesConfig extends Config {
@@ -26,7 +27,7 @@ public interface RemoveMenuEntriesConfig extends Config {
     @ConfigItem(
             keyName = "shiftWalkUnder",
             name = "Shift Walk Under",
-            description = "Holding shift removes all options except Walk Here and Cancel"
+            description = "Holding shift removes all npc entries"
     )
     default boolean shiftWalkUnder() {
         return false;
@@ -63,32 +64,72 @@ public interface RemoveMenuEntriesConfig extends Config {
     @ConfigItem(
             position = 100,
             keyName = "removeNPCs",
-            name = "Remove specific NPC entries",
+            name = "Remove NPCs",
             description = "Remove all entries for specified NPCs"
     )
     default boolean removeNPCs() {return false;}
 
-    @ConfigItem(
+    @ConfigSection(
+            name = "NPCs to Remove",
+            description = "",
             position = 101,
+            closedByDefault = true
+    )
+    String NPCsToRemoveSection = "NPCsToRemoveSection";
+
+    @ConfigItem(
             keyName = "NPCsToRemove",
             name = "NPCs to Remove",
-            description = "List of NPCs to remove if Remove Specific NPC Entries is enabled."
+            description = "List of NPCs to remove if Remove Specific NPC Entries is enabled.",
+            section = NPCsToRemoveSection
     )
     default String NPCsToRemove() {return "";}
 
     @ConfigItem(
             position = 102,
             keyName = "removeLoot",
-            name = "Remove Loot",
+            name = "Remove Ground Items",
             description = "Remove ground options for specific items"
     )
     default boolean removeLoot() {return false;}
 
-    @ConfigItem(
+    @ConfigSection(
+            name = "Ground Items to Remove",
+            description = "",
             position = 103,
+            closedByDefault = true
+    )
+    String lootToRemoveSection = "lootToRemoveSection";
+
+    @ConfigItem(
             keyName = "lootToRemove",
-            name = "Loot to Remove",
-            description = "List of items to remove ground options for."
+            name = "Ground Items to Hide",
+            description = "List of items to remove ground options for.",
+            section = lootToRemoveSection
     )
     default String lootToRemove() {return "";}
+
+    @ConfigItem(
+            keyName = "removeCustomEntries",
+            name = "Remove Custom Entries",
+            description = "Enable removal of custom entries",
+            position = 104
+    )
+    default boolean removeCustomEntries() {return false;}
+
+    @ConfigSection(
+            name = "Custom Entries to Remove",
+            description = "",
+            position = 105,
+            closedByDefault = true
+    )
+    String customEntriesSection = "customEntriesSection";
+
+    @ConfigItem(
+            keyName = "customEntries",
+            name = "Custom Entries",
+            description = "Custom entries to remove, in the form target:option",
+            section = customEntriesSection
+    )
+    default String customEntries() {return "";}
 }

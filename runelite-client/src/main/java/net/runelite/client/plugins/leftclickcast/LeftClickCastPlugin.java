@@ -40,7 +40,7 @@ public class LeftClickCastPlugin extends Plugin {
             MenuAction.ITEM_USE_ON_NPC);
     private static HashSet<String> monsters;
     private static HashSet<String> weapons;
-    private static HashSet<String> itemsToAlch;
+//    private static HashSet<String> itemsToAlch;
     private static String lastSpellClicked = "";
     private static boolean autocastOn = false;
     @Inject
@@ -57,7 +57,7 @@ public class LeftClickCastPlugin extends Plugin {
     public void startUp() {
         monsters = Sets.newHashSet(STRING_SPLITTER.splitToList(config.monsters().toLowerCase()));
         weapons = Sets.newHashSet(STRING_SPLITTER.splitToList(config.weapons().toLowerCase()));
-        itemsToAlch = Sets.newHashSet(STRING_SPLITTER.splitToList(config.itemsToAlch().toLowerCase()));
+//        itemsToAlch = Sets.newHashSet(STRING_SPLITTER.splitToList(config.itemsToAlch().toLowerCase()));
     }
 
     @Subscribe
@@ -67,8 +67,8 @@ public class LeftClickCastPlugin extends Plugin {
                 monsters = Sets.newHashSet(STRING_SPLITTER.splitToList(config.monsters().toLowerCase()));
             case ("weapons"):
                 weapons = Sets.newHashSet(STRING_SPLITTER.splitToList(config.weapons().toLowerCase()));
-            case ("itemsToAlch"):
-                itemsToAlch = Sets.newHashSet(STRING_SPLITTER.splitToList(config.itemsToAlch().toLowerCase()));
+//            case ("itemsToAlch"):
+//                itemsToAlch = Sets.newHashSet(STRING_SPLITTER.splitToList(config.itemsToAlch().toLowerCase()));
         }
     }
 
@@ -106,30 +106,35 @@ public class LeftClickCastPlugin extends Plugin {
 
     @Subscribe
     public void onMenuEntryAdded(MenuEntryAdded event) {
-        if (client.getGameState() != GameState.LOGGED_IN || !event.getOption().equals("Examine"))
+        if (client.getGameState() != GameState.LOGGED_IN || !event.getOption().equals("Examine")
+                || (!autocastOn && !config.leftClickTelegrabWines()))
             return;
 
         final String target = Text.standardize(event.getTarget());
         final String option = Text.standardize(event.getOption());
 
-        if (event.getActionParam1() == 9764864 && !(event.getIdentifier() == MenuAction.ITEM_USE_ON_WIDGET.getId()) && lastSpellClicked.contains("Alch")
-                && itemsToAlch.contains(client.getItemDefinition(event.getIdentifier()).getName().toLowerCase())) {
-            client.setMenuEntries(ObjectArrays.concat(client.getMenuEntries(),
-                    setMenuEntry(lastSpellClicked + "<col=ffffff> -> " + event.getTarget(), event.getIdentifier(), 32
-                            , event.getActionParam0(), 9764864)));
-        } else if (!(event.getActionParam1() == 9764864) && config.leftClickTelegrabWines() && lastSpellClicked.contains("Telekinetic Grab")
-                && (event.getIdentifier() == ItemID.WINE_OF_ZAMORAK || event.getIdentifier() == ItemID.WINE_OF_ZAMORAK_23489) && !target.contains("->")) {
-            client.setMenuEntries(ObjectArrays.concat(client.getMenuEntries(),
-                    setMenuEntry(lastSpellClicked + "<col=ffffff> -> " + event.getTarget(), event.getIdentifier(),
-                            MenuAction.SPELL_CAST_ON_GROUND_ITEM.getId(), event.getActionParam0(),
-                            event.getActionParam1())));
+        MenuEntry customEntry = null;
+
+//        if (event.getActionParam1() == 9764864 && !(event.getIdentifier() == MenuAction.ITEM_USE_ON_WIDGET.getId()) && lastSpellClicked.contains("Alch")
+//                && itemsToAlch.contains(client.getItemDefinition(event.getIdentifier()).getName().toLowerCase())) {
+//            customEntry = setMenuEntry(lastSpellClicked + "<col=ffffff> -> " + event.getTarget(),
+//                    event.getIdentifier(), 32, event.getActionParam0(), 9764864);
+//        } else
+            if (!(event.getActionParam1() == 9764864) && config.leftClickTelegrabWines()
+                && lastSpellClicked.contains("Telekinetic Grab") && (event.getIdentifier() == ItemID.WINE_OF_ZAMORAK
+                || event.getIdentifier() == ItemID.WINE_OF_ZAMORAK_23489) && !target.contains("->")) {
+            customEntry =  setMenuEntry(lastSpellClicked + "<col=ffffff> -> " + event.getTarget(),
+                    event.getIdentifier(),MenuAction.SPELL_CAST_ON_GROUND_ITEM.getId(),
+                    event.getActionParam0(),event.getActionParam1());
         } else if (autocastOn)
             for (String monster : monsters)
                 if (!monster.equals("") && !lastSpellClicked.equals("") && !lastSpellClicked.contains("Alch")
                         && target.contains(monster + "  (level-") && !target.contains("->"))
-                    client.setMenuEntries(ObjectArrays.concat(client.getMenuEntries(),
-                            setMenuEntry(lastSpellClicked + "<col=ffffff> -> " + event.getTarget(),
-                                    event.getIdentifier(), 8, 0, 0)));
+                    customEntry = setMenuEntry(lastSpellClicked + "<col=ffffff> -> " + event.getTarget(),
+                            event.getIdentifier(), 8, 0, 0);
+
+        if (customEntry != null)
+            client.setMenuEntries(ObjectArrays.concat(client.getMenuEntries(), customEntry));
     }
 
 

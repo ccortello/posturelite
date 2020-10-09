@@ -615,17 +615,6 @@ public interface OldMenuEntrySwapperConfig extends Config
 		return true;
 	}
 
-//	@ConfigItem(
-//			keyName = "swapPickpocket",
-//			name = "Pickpocket",
-//			description = "Swap Talk-to with Pickpocket",
-//			section = customSection
-//	)
-//	default boolean swapPickpocket()
-//	{
-//		return true;
-//	}
-
 	@ConfigItem(
 		keyName = "unlockHint",
 		name = "Music Hints",
@@ -647,17 +636,6 @@ public interface OldMenuEntrySwapperConfig extends Config
 	{
 		return false;
 	}
-
-//	@ConfigItem(
-//			keyName = "shiftWalkHere",
-//			name = "Shift Walk Here",
-//			description = "Shift prioritizes Walk Here option. Doesn't work! =(",
-//			section = customSection
-//	)
-//	default boolean shiftWalkHere()
-//	{
-//		return false;
-//	}
 
 	@ConfigItem(
 		keyName = "customSwaps",

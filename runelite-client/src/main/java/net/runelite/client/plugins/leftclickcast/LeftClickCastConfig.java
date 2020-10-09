@@ -34,6 +34,7 @@ public interface LeftClickCastConfig extends Config {
         return false;
     }
 
+    /*
     @ConfigItem(
             position = 4,
             keyName = "leftClickAlch",
@@ -53,4 +54,5 @@ public interface LeftClickCastConfig extends Config {
     default String itemsToAlch() {
         return "";
     }
+    */
 }
