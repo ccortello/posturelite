@@ -47,6 +47,22 @@ public interface RemoveMenuEntriesConfig extends Config {
     )
     default boolean removePlayerTrade() {return false;}
 
+    @ConfigSection(
+            name = "Dead NPC Blacklist",
+            description = "List of NPCs to not remove when dead",
+            position = 101,
+            closedByDefault = true
+    )
+    String deadNPCblacklistSection = "deadNPCblacklistSection";
+
+    @ConfigItem(
+            keyName = "deadNPCblacklist",
+            name = "Dead NPC Blacklist",
+            description = "List of NPCs to not remove when dead.",
+            section = deadNPCblacklistSection
+    )
+    default String NPCsBlacklist() {return "chompy";}
+
     @ConfigItem(
             keyName = "removePlayerFollow",
             name = "Remove Follow with Players",
@@ -62,7 +78,7 @@ public interface RemoveMenuEntriesConfig extends Config {
     default boolean reanimateOnlyHeads() {return false;}
 
     @ConfigItem(
-            position = 100,
+            position = 102,
             keyName = "removeNPCs",
             name = "Remove NPCs",
             description = "Remove all entries for specified NPCs"
@@ -72,7 +88,7 @@ public interface RemoveMenuEntriesConfig extends Config {
     @ConfigSection(
             name = "NPCs to Remove",
             description = "",
-            position = 101,
+            position = 103,
             closedByDefault = true
     )
     String NPCsToRemoveSection = "NPCsToRemoveSection";
@@ -86,7 +102,7 @@ public interface RemoveMenuEntriesConfig extends Config {
     default String NPCsToRemove() {return "";}
 
     @ConfigItem(
-            position = 102,
+            position = 103,
             keyName = "removeLoot",
             name = "Remove Ground Items",
             description = "Remove ground options for specific items"
@@ -95,8 +111,8 @@ public interface RemoveMenuEntriesConfig extends Config {
 
     @ConfigSection(
             name = "Ground Items to Remove",
-            description = "",
-            position = 103,
+            description = "List of items to remove ground options for.",
+            position = 104,
             closedByDefault = true
     )
     String lootToRemoveSection = "lootToRemoveSection";
@@ -113,14 +129,14 @@ public interface RemoveMenuEntriesConfig extends Config {
             keyName = "removeCustomEntries",
             name = "Remove Custom Entries",
             description = "Enable removal of custom entries",
-            position = 104
+            position = 105
     )
     default boolean removeCustomEntries() {return false;}
 
     @ConfigSection(
             name = "Custom Entries to Remove",
-            description = "",
-            position = 105,
+            description = "Custom entries to remove, in the form option:target",
+            position = 106,
             closedByDefault = true
     )
     String customEntriesSection = "customEntriesSection";
@@ -128,7 +144,7 @@ public interface RemoveMenuEntriesConfig extends Config {
     @ConfigItem(
             keyName = "customEntries",
             name = "Custom Entries",
-            description = "Custom entries to remove, in the form target:option",
+            description = "Custom entries to remove, in the form option:target",
             section = customEntriesSection
     )
     default String customEntries() {return "";}

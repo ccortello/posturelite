@@ -53,6 +53,7 @@ public class RemoveMenuEntriesPlugin extends Plugin {
             MenuAction.SPELL_CAST_ON_GROUND_ITEM);
     private static final Set<MenuAction> EXAMINE_OPTIONS = ImmutableSet.of(MenuAction.EXAMINE_ITEM_GROUND,
             MenuAction.EXAMINE_NPC, MenuAction.EXAMINE_OBJECT);
+    private static Set<String> deadNPCblacklist;
     private static Set<String> NPCsToRemove;
     private static Set<String> lootToRemove;
     private static final SetMultimap<String, String> CUSTOM_ENTRIES = MultimapBuilder.SetMultimapBuilder.hashKeys().hashSetValues().build();
@@ -83,9 +84,9 @@ public class RemoveMenuEntriesPlugin extends Plugin {
     @Override
     public void startUp() {
         keyManager.registerKeyListener(inputListener);
+        deadNPCblacklist = Sets.newHashSet(STRING_SPLITTER.splitToList(config.NPCsBlacklist().toLowerCase()));
         NPCsToRemove = Sets.newHashSet(STRING_SPLITTER.splitToList(config.NPCsToRemove().toLowerCase()));
         lootToRemove = Sets.newHashSet(STRING_SPLITTER.splitToList(config.lootToRemove().toLowerCase()));
-        CUSTOM_ENTRIES.clear();
         for (String s : STRING_SPLITTER.split(config.customEntries().toLowerCase()))
             CUSTOM_ENTRIES.put(s.substring(0, s.indexOf(":")), s.substring(s.indexOf(":") + 1));
     }
@@ -93,6 +94,7 @@ public class RemoveMenuEntriesPlugin extends Plugin {
     @Subscribe
     public void onConfigChanged(ConfigChanged event) {
         if (event.getGroup().equals("removemenuentries")) {
+            deadNPCblacklist = Sets.newHashSet(STRING_SPLITTER.splitToList(config.NPCsBlacklist().toLowerCase()));
             NPCsToRemove = Sets.newHashSet(STRING_SPLITTER.splitToList(config.NPCsToRemove().toLowerCase()));
             lootToRemove = Sets.newHashSet(STRING_SPLITTER.splitToList(config.lootToRemove().toLowerCase()));
             CUSTOM_ENTRIES.clear();
@@ -127,18 +129,15 @@ public class RemoveMenuEntriesPlugin extends Plugin {
 
         int entryType = entry.getType();
         int entryIdentifier = entry.getIdentifier();
-
         String target = Text.standardize(entry.getTarget());
         String option = Text.standardize(entry.getOption());
 
         NPC npc = null;
         NPC[] cachedNPCs = client.getCachedNPCs();
-        if ((config.removeDeadNPCs() || config.removeNPCs()) && onNPC(entryType) && cachedNPCs.length > entry.getIdentifier())
+        if ((config.removeDeadNPCs() || config.removeNPCs()) && onNPC(entryType) && cachedNPCs.length-1 > entry.getIdentifier())
             npc = cachedNPCs[entry.getIdentifier()];
 
-
-
-        return (!(config.removeDeadNPCs() && npc != null && npc.isDead())
+        return (!(config.removeDeadNPCs() && npc != null && npc.getName() != null && npc.isDead() && deadNPCblacklist.contains(npc.getName().toLowerCase()))
                 && !(config.removeNPCs() && npc != null && npc.getName() != null && NPCsToRemove.contains(npc.getName().toLowerCase()))
                 && !(config.removeItemsOnPlayers() && entryType == MenuAction.ITEM_USE_ON_PLAYER.getId())
                 && !(config.removePlayerTrade() && entryType == MenuAction.TRADE.getId())
