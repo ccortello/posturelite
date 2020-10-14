@@ -137,7 +137,7 @@ public class RemoveMenuEntriesPlugin extends Plugin {
         if ((config.removeDeadNPCs() || config.removeNPCs()) && onNPC(entryType) && cachedNPCs.length-1 > entry.getIdentifier())
             npc = cachedNPCs[entry.getIdentifier()];
 
-        return (!(config.removeDeadNPCs() && npc != null && npc.getName() != null && npc.isDead() && deadNPCblacklist.contains(npc.getName().toLowerCase()))
+        return (!(config.removeDeadNPCs() && npc != null && npc.getName() != null && npc.isDead() && !deadNPCblacklist.contains(npc.getName().toLowerCase()))
                 && !(config.removeNPCs() && npc != null && npc.getName() != null && NPCsToRemove.contains(npc.getName().toLowerCase()))
                 && !(config.removeItemsOnPlayers() && entryType == MenuAction.ITEM_USE_ON_PLAYER.getId())
                 && !(config.removePlayerTrade() && entryType == MenuAction.TRADE.getId())
