@@ -127,9 +127,9 @@ public class MapClue extends ClueScroll implements ObjectClueScroll
 	{
 		panelComponent.getChildren().add(TitleComponent.builder().text("Map Clue").build());
 
-		panelComponent.getChildren().add(LineComponent.builder()
-			.left("Click the clue scroll along the edge of your world map to see your destination.")
-			.build());
+//		panelComponent.getChildren().add(LineComponent.builder()
+//			.left("Click the clue scroll along the edge of your world map to see your destination.")
+//			.build());
 
 		if (objectId != -1)
 		{
@@ -142,20 +142,20 @@ public class MapClue extends ClueScroll implements ObjectClueScroll
 				objectName = objectToClick.getName();
 			}
 
-			panelComponent.getChildren().add(LineComponent.builder()
-				.left("Travel to the destination and click the " + objectName + ".")
-				.build());
+//			panelComponent.getChildren().add(LineComponent.builder()
+//				.left("Travel to the destination and click the " + objectName + ".")
+//				.build());
 		}
-		else
-		{
-			panelComponent.getChildren().add(LineComponent.builder()
-				.left("Travel to the destination and dig on the marked tile.")
-				.build());
-		}
+//		else
+//		{
+//			panelComponent.getChildren().add(LineComponent.builder()
+//				.left("Travel to the destination and dig on the marked tile.")
+//				.build());
+//		}
 
 		if (description != null)
 		{
-			panelComponent.getChildren().add(LineComponent.builder().build());
+//			panelComponent.getChildren().add(LineComponent.builder().build());
 			panelComponent.getChildren().add(LineComponent.builder()
 				.left(description)
 				.build());

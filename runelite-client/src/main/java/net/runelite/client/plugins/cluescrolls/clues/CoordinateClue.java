@@ -283,12 +283,12 @@ public class CoordinateClue extends ClueScroll implements TextClueScroll, Locati
 			panelComponent.getChildren().add(LineComponent.builder()
 				.left(solution.getDirections())
 				.build());
-			panelComponent.getChildren().add(LineComponent.builder().build());
+//			panelComponent.getChildren().add(LineComponent.builder().build());
 		}
 
-		panelComponent.getChildren().add(LineComponent.builder()
-			.left("Click the clue scroll on your world map to see dig location.")
-			.build());
+//		panelComponent.getChildren().add(LineComponent.builder()
+//			.left("Click the clue scroll on your world map to see dig location.")
+//			.build());
 	}
 
 	@Override

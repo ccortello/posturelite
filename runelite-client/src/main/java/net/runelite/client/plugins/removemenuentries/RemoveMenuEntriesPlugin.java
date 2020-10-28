@@ -144,7 +144,7 @@ public class RemoveMenuEntriesPlugin extends Plugin {
                 && !(config.removePlayerFollow() && entryType == MenuAction.FOLLOW.getId())
                 && !(config.removeLoot() && GROUND_OPTIONS.contains(MenuAction.of(entryType)) && lootToRemove.contains(client.getItemDefinition(entryIdentifier).getName().toLowerCase()))
                 && !(config.shiftWalkUnder() && shiftModifier && onNPC(entryType) && (entryIdentifier != 0 && !RUNELITE_ACTIONS.contains(entryType)))
-                && !(config.reanimateOnlyHeads() && entryType == MenuAction.SPELL_CAST_ON_GROUND_ITEM.getId() && target.contains("Reanimate")
+                && !(config.reanimateOnlyHeads() && entryType == MenuAction.SPELL_CAST_ON_GROUND_ITEM.getId() && target.contains("reanimate")
                     && !(client.getItemDefinition(entryIdentifier).getName().contains("Ensouled")))
                 && !(config.removeCustomEntries() && CUSTOM_ENTRIES.containsKey(option) && CUSTOM_ENTRIES.get(option).contains(target)));
     }
