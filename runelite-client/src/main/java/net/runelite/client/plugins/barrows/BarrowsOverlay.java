@@ -40,6 +40,7 @@ import net.runelite.client.ui.overlay.OverlayPosition;
 
 class BarrowsOverlay extends Overlay
 {
+	private static final int MAX_DISTANCE = 200;
 	private final Client client;
 	private final BarrowsPlugin plugin;
 	private final BarrowsConfig config;

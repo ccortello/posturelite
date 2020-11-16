@@ -675,7 +675,7 @@ public class OldMenuEntrySwapperPlugin extends Plugin {
         } else if (config.swapJewelleryBox() && option.equals("teleport menu") && !shiftModifier) {
             swap("duel arena", option, target, index);
             swap("castle wars", option, target, index);
-            swap("clan wars", option, target, index);
+            swap("ferox enclave", option, target, index);
             swap("burthorpe", option, target, index);
             swap("barbarian outpost", option, target, index);
             swap("corporeal beast", option, target, index);
@@ -809,7 +809,7 @@ public class OldMenuEntrySwapperPlugin extends Plugin {
         if (MISC_TARGETS.containsKey(target)) {
             swap(MISC_TARGETS.get(target), option, target, index);
         }
-        if (CONFIG_TARGETS.containsKey(target)) {
+        if (CONFIG_TARGETS.containsKey(target) && !shiftModifier) {
             swap(CONFIG_TARGETS.get(target), option, target, index);
         }
         if (config.swapOpCon() && WALK_HERE_OPTIONS.containsKey(target)) {

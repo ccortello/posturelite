@@ -61,7 +61,7 @@ public interface RemoveMenuEntriesConfig extends Config {
             description = "List of NPCs to not remove when dead.",
             section = deadNPCblacklistSection
     )
-    default String NPCsBlacklist() {return "chompy";}
+    default String NPCsBlacklist() {return "chompy, small lizard, gargoyle, rockslug, ice demon, awakened altar";}
 
     @ConfigItem(
             keyName = "removePlayerFollow",
