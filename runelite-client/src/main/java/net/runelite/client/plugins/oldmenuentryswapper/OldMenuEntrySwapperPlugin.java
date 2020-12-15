@@ -386,9 +386,9 @@ public class OldMenuEntrySwapperPlugin extends Plugin {
             final int opId = shiftWithdrawMode.getIdentifier();
             bankModeSwap(actionId, opId);
         }
-        if (config.swapPuroPuro() && isPuroPuro()) {
-            Player player = client.getLocalPlayer();
+        if (config.swapPuroPuro()) {
 
+            Player player = client.getLocalPlayer();
             if (player == null || player.getWorldLocation().getRegionID() != 10307) // PURO_PURO_REGION_ID
                 return;
 
@@ -402,8 +402,19 @@ public class OldMenuEntrySwapperPlugin extends Plugin {
                 client.setMenuEntries(menuEntries);
             } else if (option.equals("examine")) {
                 swap(client, "push-through", option, target, target);
-//            } else if (option.equalsIgnoreCase("use")) {
-//                swap(client, "escape", option, target, target);
+            }
+            if (target.contains("impling")) {
+                swap(client, "baby impling", option, target, target);
+                swap(client, "young impling", option, target, target);
+                swap(client, "gourmet impling", option, target, target);
+                swap(client, "earth impling", option, target, target);
+                swap(client, "essence impling", option, target, target);
+                swap(client, "eclectic impling", option, target, target);
+                swap(client, "nature impling", option, target, target);
+                swap(client, "magpie impling", option, target, target);
+                swap(client, "ninja impling", option, target, target);
+                swap(client, "dragon impling", option, target, target);
+                swap(client, "lucky impling", option, target, target);
             }
         }
     }
@@ -789,7 +800,7 @@ public class OldMenuEntrySwapperPlugin extends Plugin {
             swap("check", option, target, index);
         if (option.equals("store-1"))
             swap("store-all", option, target, index);
-        if (target.contains("impling") && config.swapPuroPuro() && isPuroPuro()) {
+        if (target.contains("impling") && config.swapPuroPuro()) {
             swap("baby impling", option, target, index);
             swap("young impling", option, target, index);
             swap("gourmet impling", option, target, index);
@@ -905,11 +916,6 @@ public class OldMenuEntrySwapperPlugin extends Plugin {
             }
         }
         client.setMenuEntries(entries);
-    }
-
-    private boolean isPuroPuro() {
-        Player player = client.getLocalPlayer();
-        return player != null && player.getWorldLocation().getRegionID() == 10307; // PURO_PURO_REGION_ID
     }
 
     @Subscribe

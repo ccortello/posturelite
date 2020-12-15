@@ -55,6 +55,11 @@ public class FastGamingPlugin extends Plugin {
     private static final ImmutableSet<Integer> FULL_NESTS = ImmutableSet.of(ItemID.BIRD_NEST_5074, ItemID.BIRD_NEST_22800);
     private static final ImmutableSet<Integer> AERIAL_FISHING_FISH = ImmutableSet.of(ItemID.BLUEGILL, ItemID.MOTTLED_EEL,
             ItemID.COMMON_TENCH, ItemID.GREATER_SIREN);
+    private static final ImmutableSet<Integer> UNF_BOLTS_AND_DARTS = ImmutableSet.of(ItemID.BRONZE_DART_TIP, ItemID.IRON_DART_TIP,
+            ItemID.STEEL_DART_TIP, ItemID.ADAMANT_DART_TIP, ItemID.MITHRIL_DART_TIP, ItemID.RUNE_DART_TIP, ItemID.DRAGON_DART_TIP,
+            ItemID.UNFINISHED_BROAD_BOLTS, ItemID.ADAMANT_BOLTSUNF, ItemID.MITHRIL_BOLTS_UNF, ItemID.BLURITE_BOLTS_UNF,
+            ItemID.BRONZE_BOLTS_UNF, ItemID.DRAGON_BOLTS_UNF, ItemID.IRON_BOLTS_UNF, ItemID.RUNITE_BOLTS_UNF, ItemID.RUNITE_BOLTS_UNF,
+            ItemID.SILVER_BOLTS_UNF, ItemID.STEEL_BOLTS_UNF);
     private static final HashSet<Integer> itemsToSkip = new HashSet<Integer>();
     private static HashSet<String> itemsAllowedToDrop = new HashSet<String>();
     private static boolean enableFastNestCrushing = false;
@@ -195,7 +200,7 @@ public class FastGamingPlugin extends Plugin {
                 for (int i = items.length - 1; i > 0; i--) {
                     int currentID = items[i].getId();
                     if (currentID == ItemID.BIRD_NEST_5075) {
-                        customEntry = setMenuEntry("Fast Crush", "<col=ff9040>" +
+                        customEntry = setMenuEntry("Use", "<col=ff9040>Pestle and Mortar<col=ffffff> -> <col=ff9040>" +
                                 client.getItemDefinition(currentID).getName(), currentID, 31, i, 9764864);
                         break;
                     }
@@ -205,8 +210,8 @@ public class FastGamingPlugin extends Plugin {
                 for (int i = items.length - 1; i > 0; i--) {
                     int currentID = items[i].getId();
                     if (currentID == ItemID.DARK_ESSENCE_BLOCK) {
-                        customEntry = setMenuEntry("Fast Chisel", "<col=ff9040>" +
-                                client.getItemDefinition(currentID).getName(), currentID, 31, i, 9764864);
+                        customEntry = setMenuEntry("Use", "<col=ff9040>Chisel<col=ffffff> -> <col=ff9040>" + event.getTarget(),
+                                currentID, 31, i, 9764864);
                         break;
                     }
                 }
@@ -215,8 +220,18 @@ public class FastGamingPlugin extends Plugin {
                 for (int i = items.length - 1; i > 0; i--) {
                     int currentID = items[i].getId();
                     if (currentID == ItemID.SACRED_EEL) {
-                        customEntry = setMenuEntry("Fast Cut", "<col=ff9040>" +
+                        customEntry = setMenuEntry("Use", "<col=ff9040>Knife<col=ffffff> -> <col=ff9040>" +
                                 client.getItemDefinition(currentID).getName(), currentID, 31, i, 9764864);
+                        break;
+                    }
+                }
+            } else if (config.fastFletchDarts() && UNF_BOLTS_AND_DARTS.contains(identifier) && inventory.contains(ItemID.FEATHER)
+                    && lastItemClicked.equals(target)) {
+                for (int i = items.length - 1; i > 0; i--) {
+                    int currentID = items[i].getId();
+                    if (currentID == ItemID.FEATHER) {
+                        customEntry = setMenuEntry("Use", "<col=ff9040>" + client.getItemDefinition(identifier).getName()
+                                + "<col=ffffff> -> <col=ff9040>Feather", currentID, 31, i, 9764864);
                         break;
                     }
                 }
@@ -229,7 +244,7 @@ public class FastGamingPlugin extends Plugin {
                     if (itemsAllowedToDrop.contains(Text.standardize(name)) && !itemsToSkip.contains(i)
                             && (!isLastDropItem(i, config.keepLastItem() ? 0 : -1)) // won't drop last item if config.keeplastitem
                             && (items[i].getQuantity() == 1 || config.fastDropStacks())) {
-                        customEntry = setMenuEntry("Fast Drop", "<col=ff9040>" +
+                        customEntry = setMenuEntry("Drop", "<col=ff9040>" +
                                 name, currentID, 37, i, 9764864);
                         break;
                     }
@@ -241,7 +256,7 @@ public class FastGamingPlugin extends Plugin {
                     String name = client.getItemDefinition(currentID).getName();
 
                     if (!itemsToSkip.contains(i) && GRIMY_HERBS.contains(currentID) && (items[i].getQuantity() == 1)) {
-                        customEntry = setMenuEntry("Fast Clean", "<col=ff9040>" + name, currentID, 33, i, 9764864);
+                        customEntry = setMenuEntry("Clean", "<col=ff9040>" + name, currentID, 33, i, 9764864);
                         break;
                     }
                 }
@@ -252,7 +267,7 @@ public class FastGamingPlugin extends Plugin {
                     String name = client.getItemDefinition(currentID).getName();
 
                     if (!itemsToSkip.contains(i) && ITEM_PACKS.contains(currentID) && (items[i].getQuantity() == 1)) {
-                        customEntry = setMenuEntry("Fast Open", "<col=ff9040>" + name, currentID, 33, i, 9764864);
+                        customEntry = setMenuEntry("Open", "<col=ff9040>" + name, currentID, 33, i, 9764864);
                         break;
                     }
                 }
@@ -263,7 +278,7 @@ public class FastGamingPlugin extends Plugin {
                     String name = client.getItemDefinition(currentID).getName();
 
                     if (FULL_NESTS.contains(currentID) && !itemsToSkip.contains(i) && (items[i].getQuantity() == 1)) {
-                        customEntry = setMenuEntry("Fast Search", "<col=ff9040>" + name, currentID, 33, i, 9764864);
+                        customEntry = setMenuEntry("Search", "<col=ff9040>" + name, currentID, 33, i, 9764864);
                         break;
                     }
                 }

@@ -69,6 +69,13 @@ public interface FastGamingConfig extends Config {
     default boolean fastSacredEels() {return false;}
 
     @ConfigItem(
+            keyName = "fastFletchDarts",
+            name = "Fast Fletch Darts",
+            description = "Repeatedly clicking dart dip will use on feathers."
+    )
+    default boolean fastFletchDarts() {return false;}
+
+    @ConfigItem(
             position = 97,
             keyName = "fastDrop",
             name = "Fast Drop",

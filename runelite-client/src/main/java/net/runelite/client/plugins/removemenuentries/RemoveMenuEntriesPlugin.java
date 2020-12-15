@@ -1,6 +1,10 @@
 package net.runelite.client.plugins.removemenuentries;
 
+import com.google.common.annotations.Beta;
 import com.google.common.base.Splitter;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ListMultimap;
@@ -12,6 +16,7 @@ import com.google.inject.Provides;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
+import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.FocusChanged;
 import net.runelite.api.events.MenuEntryAdded;
 import net.runelite.api.events.MenuOpened;
@@ -25,7 +30,10 @@ import net.runelite.client.util.Text;
 
 import javax.inject.Inject;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static net.runelite.api.MenuAction.MENU_ACTION_DEPRIORITIZE_OFFSET;
 
@@ -40,7 +48,6 @@ import static net.runelite.api.MenuAction.MENU_ACTION_DEPRIORITIZE_OFFSET;
 public class RemoveMenuEntriesPlugin extends Plugin {
 
     private static final Splitter STRING_SPLITTER = Splitter.onPattern("[,\r?\n]+").trimResults().omitEmptyStrings();
-//    private static final Splitter.MapSplitter MAP_SPLITTER = Splitter.onPattern("[,\\r?\\n]+").trimResults().omitEmptyStrings().withKeyValueSeparator(":");
     private static final Set<Integer> RUNELITE_ACTIONS = ImmutableSet.of(MenuAction.RUNELITE.getId(),
             MenuAction.RUNELITE_INFOBOX.getId(), MenuAction.RUNELITE_OVERLAY.getId(),
             MenuAction.RUNELITE_OVERLAY_CONFIG.getId(), MenuAction.RUNELITE_PLAYER.getId());
@@ -56,6 +63,7 @@ public class RemoveMenuEntriesPlugin extends Plugin {
     private static Set<String> deadNPCblacklist;
     private static Set<String> NPCsToRemove;
     private static Set<String> lootToRemove;
+    private final Map<MenuEntry, Boolean> cache = new HashMap<>();
     private static final SetMultimap<String, String> CUSTOM_ENTRIES = MultimapBuilder.SetMultimapBuilder.hashKeys().hashSetValues().build();
 
     @Inject
@@ -100,7 +108,13 @@ public class RemoveMenuEntriesPlugin extends Plugin {
             CUSTOM_ENTRIES.clear();
             for (String s : STRING_SPLITTER.split(config.customEntries().toLowerCase()))
                 CUSTOM_ENTRIES.put(s.substring(0, s.indexOf(":")), s.substring(s.indexOf(":") + 1));
+            cache.clear();
         }
+    }
+
+    @Subscribe
+    public void onClientTick(ClientTick event) {
+        cache.clear();
     }
 
     @Subscribe
@@ -118,35 +132,43 @@ public class RemoveMenuEntriesPlugin extends Plugin {
         if (entries == null)
             return;
 
-        client.setMenuEntries(Arrays.stream(entries).filter(this::customEntryFilter).toArray(MenuEntry[]::new));
+        client.setMenuEntries(Arrays.stream(entries).filter(this::memoizedFilter).toArray(MenuEntry[]::new));
     }
 
     private boolean examineFilter(MenuEntry entry) {
         return !(config.removeExamine() && EXAMINE_OPTIONS.contains(MenuAction.of(entry.getType())));
     }
 
+    private boolean memoizedFilter(MenuEntry entry) {
+        return cache.computeIfAbsent(entry, this::customEntryFilter) && NPCEntryFilter(entry);
+    }
+
     private boolean customEntryFilter(MenuEntry entry) {
 
         int entryType = entry.getType();
         int entryIdentifier = entry.getIdentifier();
+
         String target = Text.standardize(entry.getTarget());
         String option = Text.standardize(entry.getOption());
 
-        NPC npc = null;
-        NPC[] cachedNPCs = client.getCachedNPCs();
-        if ((config.removeDeadNPCs() || config.removeNPCs()) && onNPC(entryType) && cachedNPCs.length-1 > entry.getIdentifier())
-            npc = cachedNPCs[entry.getIdentifier()];
-
-        return (!(config.removeDeadNPCs() && npc != null && npc.getName() != null && npc.isDead() && !deadNPCblacklist.contains(npc.getName().toLowerCase()))
-                && !(config.removeNPCs() && npc != null && npc.getName() != null && NPCsToRemove.contains(npc.getName().toLowerCase()))
-                && !(config.removeItemsOnPlayers() && entryType == MenuAction.ITEM_USE_ON_PLAYER.getId())
+        return !(config.removeItemsOnPlayers() && entryType == MenuAction.ITEM_USE_ON_PLAYER.getId())
                 && !(config.removePlayerTrade() && entryType == MenuAction.TRADE.getId())
                 && !(config.removePlayerFollow() && entryType == MenuAction.FOLLOW.getId())
                 && !(config.removeLoot() && GROUND_OPTIONS.contains(MenuAction.of(entryType)) && lootToRemove.contains(client.getItemDefinition(entryIdentifier).getName().toLowerCase()))
                 && !(config.shiftWalkUnder() && shiftModifier && onNPC(entryType) && (entryIdentifier != 0 && !RUNELITE_ACTIONS.contains(entryType)))
                 && !(config.reanimateOnlyHeads() && entryType == MenuAction.SPELL_CAST_ON_GROUND_ITEM.getId() && target.contains("reanimate")
                     && !(client.getItemDefinition(entryIdentifier).getName().contains("Ensouled")))
-                && !(config.removeCustomEntries() && CUSTOM_ENTRIES.containsKey(option) && CUSTOM_ENTRIES.get(option).contains(target)));
+                && !(config.removeCustomEntries() && CUSTOM_ENTRIES.containsKey(option) && CUSTOM_ENTRIES.get(option).contains(target));
+    }
+
+    private boolean NPCEntryFilter(MenuEntry entry) {
+        NPC npc = null;
+        NPC[] cachedNPCs = client.getCachedNPCs();
+        if ((config.removeDeadNPCs() || config.removeNPCs()) && onNPC(entry.getType()) && cachedNPCs.length > entry.getIdentifier())
+            npc = cachedNPCs[entry.getIdentifier()];
+
+        return !(config.removeDeadNPCs() && npc != null && npc.getName() != null && npc.isDead() && !deadNPCblacklist.contains(npc.getName().toLowerCase()))
+                && !(config.removeNPCs() && npc != null && npc.getName() != null && NPCsToRemove.contains(npc.getName().toLowerCase()));
     }
 
     // Copied from NpcIndicatorsPlugin
